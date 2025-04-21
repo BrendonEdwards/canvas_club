@@ -19,7 +19,7 @@ export default function Contact() {
             brendon.edwards@live.co.uk
           </Link>
           <Link
-            href="https://linkedin.com/in/brendon-edwards"
+            href="https://linkedin.com/in/brendonedwards"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 text-lg hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
