@@ -28,11 +28,9 @@ import {
 } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Separator } from "@/components/ui/separator"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Switch } from "@/components/ui/switch"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 
@@ -48,7 +46,7 @@ export default function ArtSubscription() {
     customPieces: "1",
     artistTier: "Emerging",
     artType: "Print",
-    size: "A3",
+    size: "A4",
     frameCommitment: false,
     billingCycle: "monthly",
     paymentMethod: "card",
@@ -96,12 +94,19 @@ export default function ArtSubscription() {
       Original: 8,
     },
     size: {
-      A3: 1,
-      A2: 1.4,
-      A1: 2.1,
-      A0: 3.2,
+      A4: 1,
+      A3: 1.25,
+      A2: 1.75,
+      A1: 2.6,
+      A0: 4.0,
     },
   }
+
+  // Add these state variables after the existing ones
+  const [swipeIndex, setSwipeIndex] = useState(0)
+  const [swipeHistory, setSwipeHistory] = useState([])
+  const [swipeComplete, setSwipeComplete] = useState(false)
+  const [showContinuePrompt, setShowContinuePrompt] = useState(false)
 
   // Calculate final price based on selections
   const calculatePrice = () => {
@@ -348,6 +353,119 @@ export default function ArtSubscription() {
     }
   }
 
+  // Add these helper functions
+  const getSwipeArtworks = () => {
+    return [
+      {
+        id: 0,
+        style: "Abstract Expressionism",
+        image: "https://images.unsplash.com/photo-1543857778-c4a1a3e0b2eb?w=500&h=500&fit=crop",
+        artist: "Contemporary Artist",
+      },
+      {
+        id: 1,
+        style: "Impressionist",
+        image: "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=500&h=500&fit=crop",
+        artist: "Classical Style",
+      },
+      {
+        id: 2,
+        style: "Cubism",
+        image: "https://images.unsplash.com/photo-1515405295579-ba7b45403062?w=500&h=500&fit=crop",
+        artist: "Modern Movement",
+      },
+      {
+        id: 3,
+        style: "Surrealism",
+        image: "https://images.unsplash.com/photo-1547891654-e66ed7ebb968?w=500&h=500&fit=crop",
+        artist: "Dream-like Art",
+      },
+      {
+        id: 4,
+        style: "Pop Art",
+        image: "https://images.unsplash.com/photo-1605721911519-3dfeb3be25e7?w=500&h=500&fit=crop",
+        artist: "Bold & Vibrant",
+      },
+      {
+        id: 5,
+        style: "Minimalist",
+        image: "https://images.unsplash.com/photo-1552083974-186346191183?w=500&h=500&fit=crop",
+        artist: "Clean & Simple",
+      },
+      {
+        id: 6,
+        style: "Digital Art",
+        image: "https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?w=500&h=500&fit=crop",
+        artist: "Digital Creator",
+      },
+      {
+        id: 7,
+        style: "Landscape",
+        image: "https://images.unsplash.com/photo-1500964757637-c85e8a162699?w=500&h=500&fit=crop",
+        artist: "Nature Focused",
+      },
+      {
+        id: 8,
+        style: "Portrait",
+        image: "https://images.unsplash.com/photo-1578926288207-32356a2de21d?w=500&h=500&fit=crop",
+        artist: "Human Expression",
+      },
+      {
+        id: 9,
+        style: "Still Life",
+        image: "https://images.unsplash.com/photo-1579762593175-20226054cad0?w=500&h=500&fit=crop",
+        artist: "Object Study",
+      },
+    ]
+  }
+
+  const handleSwipe = (direction, artworkId) => {
+    const newHistory = [...swipeHistory, { artworkId, direction, index: swipeIndex }]
+    setSwipeHistory(newHistory)
+
+    // Update ratings array to maintain compatibility with existing validation
+    const updatedRatings = [...formData.ratings]
+    updatedRatings[swipeIndex] = direction === "right" ? "4" : direction === "up" ? "5" : "2"
+
+    setFormData({
+      ...formData,
+      ratings: updatedRatings,
+    })
+
+    if (swipeIndex < 9) {
+      setSwipeIndex(swipeIndex + 1)
+    } else {
+      setSwipeComplete(true)
+      setShowContinuePrompt(true)
+    }
+  }
+
+  const handleUndo = () => {
+    if (swipeHistory.length > 0) {
+      const lastSwipe = swipeHistory[swipeHistory.length - 1]
+      const newHistory = swipeHistory.slice(0, -1)
+      setSwipeHistory(newHistory)
+      setSwipeIndex(lastSwipe.index)
+
+      // Clear the rating for this artwork
+      const updatedRatings = [...formData.ratings]
+      updatedRatings[lastSwipe.index] = ""
+
+      setFormData({
+        ...formData,
+        ratings: updatedRatings,
+      })
+
+      setSwipeComplete(false)
+      setShowContinuePrompt(false)
+    }
+  }
+
+  const handleSwipeComplete = () => {
+    setShowContinuePrompt(false)
+    // All 10 artworks have been rated, validation will pass
+  }
+
   // Render step content based on current step
   const renderStepContent = () => {
     switch (currentStep) {
@@ -498,31 +616,31 @@ export default function ArtSubscription() {
                 {[
                   {
                     name: "Abstract",
-                    image: "https://images.unsplash.com/photo-1573221566340-81bdde00e00b?w=500&h=500&fit=crop",
+                    image: "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=500&h=500&fit=crop",
                   },
                   {
                     name: "Impressionist",
-                    image: "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=500&h=500&fit=crop",
+                    image: "https://images.unsplash.com/photo-1578321272176-b7bbc0679853?w=500&h=500&fit=crop",
                   },
                   {
                     name: "Landscape",
-                    image: "https://images.unsplash.com/photo-1500964757637-c85e8a162699?w=500&h=500&fit=crop",
+                    image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500&h=500&fit=crop",
                   },
                   {
                     name: "Portrait",
-                    image: "https://images.unsplash.com/photo-1578926288207-32356a2de21d?w=500&h=500&fit=crop",
+                    image: "https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?w=500&h=500&fit=crop",
                   },
                   {
                     name: "Minimalist",
-                    image: "https://images.unsplash.com/photo-1552083974-186346191183?w=500&h=500&fit=crop",
+                    image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500&h=500&fit=crop",
                   },
                   {
                     name: "Surrealism",
-                    image: "https://images.unsplash.com/photo-1547891654-e66ed7ebb968?w=500&h=500&fit=crop",
+                    image: "https://images.unsplash.com/photo-1578321272176-b7bbc0679853?w=500&h=500&fit=crop",
                   },
                   {
                     name: "Pop Art",
-                    image: "https://images.unsplash.com/photo-1605721911519-3dfeb3be25e7?w=500&h=500&fit=crop",
+                    image: "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=500&h=500&fit=crop",
                   },
                   {
                     name: "Cubism",
@@ -530,7 +648,7 @@ export default function ArtSubscription() {
                   },
                   {
                     name: "Watercolor",
-                    image: "https://images.unsplash.com/photo-1636055616730-644e5faee9c3?w=500&h=500&fit=crop",
+                    image: "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=500&h=500&fit=crop",
                   },
                   {
                     name: "Still Life",
@@ -538,11 +656,11 @@ export default function ArtSubscription() {
                   },
                   {
                     name: "Urban",
-                    image: "https://images.unsplash.com/photo-1514924013411-cbf25faa35bb?w=500&h=500&fit=crop",
+                    image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=500&h=500&fit=crop",
                   },
                   {
                     name: "Nature",
-                    image: "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=500&h=500&fit=crop",
+                    image: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=500&h=500&fit=crop",
                   },
                   {
                     name: "Black & White",
@@ -650,10 +768,11 @@ export default function ArtSubscription() {
             <div className="space-y-3">
               <CardTitle className="flex items-center gap-3 text-2xl font-serif">
                 <Star className="h-6 w-6 text-primary" />
-                Art Ratings
+                Refine Your Taste
               </CardTitle>
               <CardDescription className="text-base leading-relaxed">
-                Rate these artworks to help us understand your taste preferences.
+                Swipe through artworks to help us understand your preferences. Swipe right for pieces you like, left for
+                those you don't.
               </CardDescription>
             </div>
 
@@ -663,166 +782,14 @@ export default function ArtSubscription() {
               </Alert>
             )}
 
-            <Tabs defaultValue="grid" className="w-full mt-6">
-              <TabsList className="grid w-full grid-cols-2 rounded-lg overflow-hidden">
-                <TabsTrigger
-                  value="grid"
-                  className="rounded-none data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-                >
-                  Grid View
-                </TabsTrigger>
-                <TabsTrigger
-                  value="list"
-                  className="rounded-none data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-                >
-                  List View
-                </TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="grid" className="mt-6">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {Array.from({ length: 10 }).map((_, index) => (
-                    <Card
-                      key={index}
-                      className={`overflow-hidden transition-all shadow-subtle hover:shadow-md ${formData.ratings[index] ? "ring-1 ring-primary" : ""}`}
-                    >
-                      <div className="aspect-square relative bg-muted">
-                        <img
-                          src={getArtworkImageForIndex(index) || "/placeholder.svg"}
-                          alt={`${getArtStyleForIndex(index)} artwork`}
-                          className="object-cover w-full h-full"
-                          loading="lazy"
-                        />
-                        {formData.ratings[index] && (
-                          <div className="absolute top-3 right-3">
-                            <Badge className="bg-primary text-primary-foreground shadow-subtle">
-                              {formData.ratings[index]} ★
-                            </Badge>
-                          </div>
-                        )}
-                      </div>
-                      <CardContent className="p-4">
-                        <div className="text-sm font-medium mb-3 font-serif">{getArtStyleForIndex(index)}</div>
-                        <div className="flex items-center gap-3">
-                          <Label htmlFor={`rating${index}`} className="text-sm whitespace-nowrap">
-                            Rating:
-                          </Label>
-                          <div className="flex gap-1.5">
-                            <TooltipProvider>
-                              {[
-                                { value: 1, label: "Not my style" },
-                                { value: 2, label: "It's okay" },
-                                { value: 3, label: "I like it" },
-                                { value: 4, label: "I really like it" },
-                                { value: 5, label: "I love it!" },
-                              ].map((rating) => (
-                                <Tooltip key={rating.value}>
-                                  <TooltipTrigger asChild>
-                                    <Button
-                                      type="button"
-                                      size="icon"
-                                      variant={formData.ratings[index] == rating.value ? "default" : "outline"}
-                                      className={`h-8 w-8 rounded-sm ${
-                                        formData.ratings[index] == rating.value
-                                          ? "bg-primary text-primary-foreground"
-                                          : "border-primary/30 text-primary hover:bg-primary/10"
-                                      }`}
-                                      onClick={() => {
-                                        const updatedRatings = [...formData.ratings]
-                                        updatedRatings[index] = rating.value.toString()
-                                        setFormData({
-                                          ...formData,
-                                          ratings: updatedRatings,
-                                        })
-                                      }}
-                                      aria-label={`Rate artwork ${index + 1} as ${rating.value} stars: ${rating.label}`}
-                                    >
-                                      {rating.value}
-                                    </Button>
-                                  </TooltipTrigger>
-                                  <TooltipContent side="bottom">{rating.label}</TooltipContent>
-                                </Tooltip>
-                              ))}
-                            </TooltipProvider>
-                          </div>
-                        </div>
-                        {formData.ratings[index] && (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="mt-2 text-xs text-primary hover:bg-primary/5"
-                            onClick={() => {
-                              // This would typically filter for similar artworks
-                              alert("Finding similar artworks to this style...")
-                            }}
-                          >
-                            Find similar to this
-                          </Button>
-                        )}
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </TabsContent>
-
-              <TabsContent value="list" className="mt-6 space-y-4">
-                {Array.from({ length: 10 }).map((_, index) => (
-                  <div key={index} className="flex items-center gap-4 p-4 border rounded-lg shadow-subtle">
-                    <div className="w-20 h-20 shrink-0 bg-muted rounded-md overflow-hidden shadow-subtle">
-                      <img
-                        src={getArtworkImageForIndex(index) || "/placeholder.svg"}
-                        alt={`${getArtStyleForIndex(index)} artwork`}
-                        className="object-cover w-full h-full"
-                        loading="lazy"
-                      />
-                    </div>
-                    <div className="flex-1">
-                      <div className="font-medium text-base font-serif">{getArtStyleForIndex(index)}</div>
-                      <div className="text-sm text-muted-foreground">Artwork #{index + 1}</div>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <TooltipProvider>
-                        {[1, 2, 3, 4, 5].map((rating) => (
-                          <Tooltip key={rating}>
-                            <TooltipTrigger asChild>
-                              <Button
-                                key={rating}
-                                type="button"
-                                size="icon"
-                                variant={formData.ratings[index] == rating ? "default" : "outline"}
-                                className={`h-8 w-8 rounded-sm ${formData.ratings[index] == rating ? "bg-primary text-primary-foreground" : "border-primary/30 text-primary hover:bg-primary/10"}`}
-                                onClick={() => {
-                                  const updatedRatings = [...formData.ratings]
-                                  updatedRatings[index] = rating.toString()
-                                  setFormData({
-                                    ...formData,
-                                    ratings: updatedRatings,
-                                  })
-                                }}
-                                aria-label={`Rate artwork ${index + 1} as ${rating} stars`}
-                              >
-                                {rating}
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent side="bottom">
-                              {rating === 1
-                                ? "Not my style"
-                                : rating === 2
-                                  ? "It's okay"
-                                  : rating === 3
-                                    ? "I like it"
-                                    : rating === 4
-                                      ? "I really like it"
-                                      : "I love it!"}
-                            </TooltipContent>
-                          </Tooltip>
-                        ))}
-                      </TooltipProvider>
-                    </div>
-                  </div>
-                ))}
-              </TabsContent>
-            </Tabs>
+            <SwipeInterface
+              artworks={getSwipeArtworks()}
+              onSwipe={handleSwipe}
+              onUndo={handleUndo}
+              currentIndex={swipeIndex}
+              swipeHistory={swipeHistory}
+              onComplete={handleSwipeComplete}
+            />
           </div>
         )
       case 3:
@@ -834,8 +801,7 @@ export default function ArtSubscription() {
                 Subscription Plan
               </CardTitle>
               <CardDescription className="text-base leading-relaxed">
-                Choose a subscription plan that fits your art collection goals. All plans are billed monthly with
-                artwork delivered quarterly.
+                Choose a subscription plan that fits your art collection goals.
               </CardDescription>
             </div>
 
@@ -853,51 +819,7 @@ export default function ArtSubscription() {
               </span>
             </div>
 
-            <div className="hidden md:block">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-[200px]">Plan Features</TableHead>
-                    <TableHead>Basic</TableHead>
-                    <TableHead>
-                      Standard <Badge className="ml-1 bg-primary/20 text-primary">Popular</Badge>
-                    </TableHead>
-                    <TableHead>Premium</TableHead>
-                    <TableHead>Custom</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  <TableRow>
-                    <TableCell className="font-medium">Artworks per quarter</TableCell>
-                    <TableCell>1</TableCell>
-                    <TableCell>3</TableCell>
-                    <TableCell>5</TableCell>
-                    <TableCell>1-10</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className="font-medium">Artist tiers</TableCell>
-                    <TableCell>Emerging only</TableCell>
-                    <TableCell>Emerging, Mid-Career</TableCell>
-                    <TableCell>All tiers</TableCell>
-                    <TableCell>Your choice</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className="font-medium">Art types</TableCell>
-                    <TableCell>Prints only</TableCell>
-                    <TableCell>Prints, Limited Editions</TableCell>
-                    <TableCell>All types</TableCell>
-                    <TableCell>Your choice</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className="font-medium">Price</TableCell>
-                    <TableCell>£10/month</TableCell>
-                    <TableCell>£25/month</TableCell>
-                    <TableCell>£40/month</TableCell>
-                    <TableCell>£5 per piece/month</TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </div>
+            
 
             <RadioGroup
               value={formData.subscriptionPlan}
@@ -1206,6 +1128,19 @@ export default function ArtSubscription() {
                         className="grid grid-cols-2 gap-4"
                       >
                         <div
+                          className={`flex flex-col p-4 rounded-lg border transition-all shadow-subtle ${formData.size === "A4" ? "border-primary bg-primary/5" : "border-border"}`}
+                        >
+                          <RadioGroupItem value="A4" id="size-a4" className="sr-only" />
+                          <Label htmlFor="size-a4" className="font-medium font-serif text-lg cursor-pointer">
+                            A4
+                          </Label>
+                          <p className="text-muted-foreground mt-2 leading-relaxed">21.0 × 29.7 cm</p>
+                          <Badge variant="outline" className="mt-4 w-fit border-primary/30 text-primary">
+                            Base Price
+                          </Badge>
+                        </div>
+
+                        <div
                           className={`flex flex-col p-4 rounded-lg border transition-all shadow-subtle ${formData.size === "A3" ? "border-primary bg-primary/5" : "border-border"}`}
                         >
                           <RadioGroupItem value="A3" id="size-a3" className="sr-only" />
@@ -1214,7 +1149,7 @@ export default function ArtSubscription() {
                           </Label>
                           <p className="text-muted-foreground mt-2 leading-relaxed">29.7 × 42.0 cm</p>
                           <Badge variant="outline" className="mt-4 w-fit border-primary/30 text-primary">
-                            Base Price
+                            1.25x Multiplier
                           </Badge>
                         </div>
 
@@ -1227,7 +1162,7 @@ export default function ArtSubscription() {
                           </Label>
                           <p className="text-muted-foreground mt-2 leading-relaxed">42.0 × 59.4 cm</p>
                           <Badge variant="outline" className="mt-4 w-fit border-primary/30 text-primary">
-                            1.4x Multiplier
+                            1.75x Multiplier
                           </Badge>
                         </div>
 
@@ -1240,7 +1175,7 @@ export default function ArtSubscription() {
                           </Label>
                           <p className="text-muted-foreground mt-2 leading-relaxed">59.4 × 84.1 cm</p>
                           <Badge variant="outline" className="mt-4 w-fit border-primary/30 text-primary">
-                            2.1x Multiplier
+                            2.6x Multiplier
                           </Badge>
                         </div>
 
@@ -1253,7 +1188,7 @@ export default function ArtSubscription() {
                           </Label>
                           <p className="text-muted-foreground mt-2 leading-relaxed">84.1 × 118.9 cm</p>
                           <Badge variant="outline" className="mt-4 w-fit border-primary/30 text-primary">
-                            3.2x Multiplier
+                            4.0x Multiplier
                           </Badge>
                         </div>
                       </RadioGroup>
@@ -1723,6 +1658,335 @@ export default function ArtSubscription() {
     }
   }
 
+  // Add this component before the return statement
+  const SwipeInterface = ({ artworks, onSwipe, onUndo, currentIndex, swipeHistory, onComplete }) => {
+    const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 })
+    const [isDragging, setIsDragging] = useState(false)
+    const [dragDirection, setDragDirection] = useState(null)
+    const [cardRef, setCardRef] = useState(null)
+
+    const currentArtwork = artworks[currentIndex]
+    const isComplete = currentIndex >= artworks.length
+
+    // Handle keyboard controls for desktop
+    useEffect(() => {
+      const handleKeyPress = (e) => {
+        if (isComplete) return
+
+        if (e.key === "ArrowLeft") {
+          onSwipe("left", currentArtwork.id)
+        } else if (e.key === "ArrowRight") {
+          onSwipe("right", currentArtwork.id)
+        } else if (e.key === "ArrowUp") {
+          onSwipe("up", currentArtwork.id)
+        } else if (e.key === "z" && (e.ctrlKey || e.metaKey)) {
+          e.preventDefault()
+          onUndo()
+        }
+      }
+
+      window.addEventListener("keydown", handleKeyPress)
+      return () => window.removeEventListener("keydown", handleKeyPress)
+    }, [currentArtwork, isComplete, onSwipe, onUndo])
+
+    // Mouse/touch handlers
+    const handleStart = (clientX, clientY) => {
+      setIsDragging(true)
+      setDragOffset({ x: 0, y: 0 })
+      setDragDirection(null)
+    }
+
+    const handleMove = (clientX, clientY, startX, startY) => {
+      if (!isDragging) return
+
+      const deltaX = clientX - startX
+      const deltaY = clientY - startY
+
+      setDragOffset({ x: deltaX, y: deltaY })
+
+      // Determine direction
+      if (Math.abs(deltaX) > Math.abs(deltaY)) {
+        setDragDirection(deltaX > 0 ? "right" : "left")
+      } else if (deltaY < -50) {
+        setDragDirection("up")
+      } else {
+        setDragDirection(null)
+      }
+    }
+
+    const handleEnd = () => {
+      if (!isDragging) return
+
+      const threshold = 100
+      const upThreshold = 80
+
+      if (Math.abs(dragOffset.x) > threshold) {
+        onSwipe(dragOffset.x > 0 ? "right" : "left", currentArtwork.id)
+      } else if (dragOffset.y < -upThreshold) {
+        onSwipe("up", currentArtwork.id)
+      }
+
+      setIsDragging(false)
+      setDragOffset({ x: 0, y: 0 })
+      setDragDirection(null)
+    }
+
+    // Mouse events
+    const handleMouseDown = (e) => {
+      const startX = e.clientX
+      const startY = e.clientY
+      handleStart(startX, startY)
+
+      const handleMouseMove = (e) => handleMove(e.clientX, e.clientY, startX, startY)
+      const handleMouseUp = () => {
+        handleEnd()
+        document.removeEventListener("mousemove", handleMouseMove)
+        document.removeEventListener("mouseup", handleMouseUp)
+      }
+
+      document.addEventListener("mousemove", handleMouseMove)
+      document.addEventListener("mouseup", handleMouseUp)
+    }
+
+    // Touch events
+    const handleTouchStart = (e) => {
+      const touch = e.touches[0]
+      const startX = touch.clientX
+      const startY = touch.clientY
+      handleStart(startX, startY)
+
+      const handleTouchMove = (e) => {
+        const touch = e.touches[0]
+        handleMove(touch.clientX, touch.clientY, startX, startY)
+      }
+
+      const handleTouchEnd = () => {
+        handleEnd()
+        document.removeEventListener("touchmove", handleTouchMove)
+        document.removeEventListener("touchend", handleTouchEnd)
+      }
+
+      document.addEventListener("touchmove", handleTouchMove)
+      document.addEventListener("touchend", handleTouchEnd)
+    }
+
+    if (isComplete) {
+      return (
+        <div className="flex flex-col items-center space-y-6">
+          <div className="text-center space-y-4">
+            <CheckCircle className="h-16 w-16 text-primary mx-auto" />
+            <h3 className="text-xl font-serif">Perfect! We've got a good sense of your style.</h3>
+            <p className="text-muted-foreground">
+              Based on your preferences, we'll curate artwork that matches your taste.
+            </p>
+          </div>
+
+          {showContinuePrompt && (
+            <div className="bg-primary/5 p-6 rounded-lg border border-primary/20 text-center space-y-4">
+              <p className="font-medium">Want to keep swiping to improve your matches?</p>
+              <div className="flex gap-3 justify-center">
+                <Button
+                  variant="outline"
+                  onClick={onComplete}
+                  className="border-primary/30 text-primary hover:bg-primary/10"
+                >
+                  I'm happy with this
+                </Button>
+                <Button
+                  onClick={() => {
+                    setSwipeIndex(0)
+                    setSwipeComplete(false)
+                    setShowContinuePrompt(false)
+                  }}
+                  className="bg-primary text-primary-foreground hover:bg-primary/90"
+                >
+                  Keep swiping
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {swipeHistory.length > 0 && (
+            <Button variant="ghost" onClick={onUndo} className="text-primary hover:bg-primary/10">
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Undo last swipe
+            </Button>
+          )}
+        </div>
+      )
+    }
+
+    const getCardStyle = () => {
+      const rotation = dragOffset.x * 0.1
+      const scale = isDragging ? 0.95 : 1
+
+      return {
+        transform: `translate(${dragOffset.x}px, ${dragOffset.y}px) rotate(${rotation}deg) scale(${scale})`,
+        transition: isDragging ? "none" : "transform 0.3s ease-out",
+      }
+    }
+
+    const getOverlayOpacity = () => {
+      if (!dragDirection) return 0
+
+      if (dragDirection === "up") {
+        return Math.min(Math.abs(dragOffset.y) / 80, 1)
+      }
+      return Math.min(Math.abs(dragOffset.x) / 100, 1)
+    }
+
+    return (
+      <div className="flex flex-col items-center space-y-6">
+        {/* Progress indicator */}
+        <div className="w-full max-w-md">
+          <div className="flex justify-between text-sm text-muted-foreground mb-2">
+            <span>Progress</span>
+            <span>
+              {currentIndex + 1} of {artworks.length}
+            </span>
+          </div>
+          <div className="w-full bg-gray-200 h-2 rounded-full">
+            <div
+              className="bg-primary h-2 rounded-full transition-all duration-300"
+              style={{ width: `${((currentIndex + 1) / artworks.length) * 100}%` }}
+            />
+          </div>
+        </div>
+
+        {/* Swipe instructions */}
+        <div className="text-center space-y-2">
+          <div className="flex items-center justify-center gap-6 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2">
+              <ArrowLeft className="h-4 w-4" />
+              <span>Dislike</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <ArrowRight className="h-4 w-4" />
+              <span>Like</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Star className="h-4 w-4" />
+              <span>Love</span>
+            </div>
+          </div>
+          <p className="text-xs text-muted-foreground">Use arrow keys or swipe on mobile</p>
+        </div>
+
+        {/* Card stack */}
+        <div className="relative w-full max-w-md h-96">
+          {/* Next card (background) */}
+          {currentIndex + 1 < artworks.length && (
+            <div className="absolute inset-0 bg-white rounded-xl shadow-lg border transform scale-95 opacity-50">
+              <div className="aspect-square relative rounded-t-xl overflow-hidden bg-muted">
+                <img
+                  src={artworks[currentIndex + 1].image || "/placeholder.svg"}
+                  alt={artworks[currentIndex + 1].style}
+                  className="object-cover w-full h-full"
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Current card */}
+          <div
+            ref={cardRef}
+            className="absolute inset-0 bg-white rounded-xl shadow-lg border cursor-grab active:cursor-grabbing select-none"
+            style={getCardStyle()}
+            onMouseDown={handleMouseDown}
+            onTouchStart={handleTouchStart}
+          >
+            {/* Swipe overlays */}
+            <div
+              className="absolute inset-0 bg-green-500 rounded-xl flex items-center justify-center z-10"
+              style={{
+                opacity: dragDirection === "right" ? getOverlayOpacity() : 0,
+                transition: isDragging ? "none" : "opacity 0.2s",
+              }}
+            >
+              <div className="text-white text-2xl font-bold transform rotate-12">LIKE</div>
+            </div>
+
+            <div
+              className="absolute inset-0 bg-red-500 rounded-xl flex items-center justify-center z-10"
+              style={{
+                opacity: dragDirection === "left" ? getOverlayOpacity() : 0,
+                transition: isDragging ? "none" : "opacity 0.2s",
+              }}
+            >
+              <div className="text-white text-2xl font-bold transform -rotate-12">PASS</div>
+            </div>
+
+            <div
+              className="absolute inset-0 bg-purple-500 rounded-xl flex items-center justify-center z-10"
+              style={{
+                opacity: dragDirection === "up" ? getOverlayOpacity() : 0,
+                transition: isDragging ? "none" : "opacity 0.2s",
+              }}
+            >
+              <div className="text-white text-2xl font-bold">LOVE</div>
+            </div>
+
+            {/* Card content */}
+            <div className="aspect-square relative rounded-t-xl overflow-hidden bg-muted">
+              <img
+                src={currentArtwork.image || "/placeholder.svg"}
+                alt={currentArtwork.style}
+                className="object-cover w-full h-full"
+                draggable={false}
+              />
+            </div>
+
+            <div className="p-4 space-y-2">
+              <h3 className="font-serif text-lg font-medium">{currentArtwork.style}</h3>
+              <p className="text-sm text-muted-foreground">{currentArtwork.artist}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Desktop controls */}
+        <div className="hidden md:flex gap-4">
+          <Button
+            variant="outline"
+            size="lg"
+            onClick={() => onSwipe("left", currentArtwork.id)}
+            className="border-red-200 text-red-600 hover:bg-red-50"
+          >
+            <ArrowLeft className="h-5 w-5 mr-2" />
+            Pass
+          </Button>
+
+          <Button
+            variant="outline"
+            size="lg"
+            onClick={() => onSwipe("up", currentArtwork.id)}
+            className="border-purple-200 text-purple-600 hover:bg-purple-50"
+          >
+            <Star className="h-5 w-5 mr-2" />
+            Love
+          </Button>
+
+          <Button
+            variant="outline"
+            size="lg"
+            onClick={() => onSwipe("right", currentArtwork.id)}
+            className="border-green-200 text-green-600 hover:bg-green-50"
+          >
+            <ArrowRight className="h-5 w-5 mr-2" />
+            Like
+          </Button>
+        </div>
+
+        {/* Undo button */}
+        {swipeHistory.length > 0 && (
+          <Button variant="ghost" onClick={onUndo} className="text-primary hover:bg-primary/10">
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Undo last swipe
+          </Button>
+        )}
+      </div>
+    )
+  }
+
   // Add a helper function to get art style for each artwork
   const getArtStyleForIndex = (index) => {
     const styles = [
@@ -1855,13 +2119,34 @@ export default function ArtSubscription() {
           )}
 
           {currentStep < 6 ? (
-            <Button
-              onClick={handleNext}
-              className={`flex items-center gap-2 rounded-sm bg-primary text-primary-foreground hover:bg-primary/90 transition-all ${currentStep > 0 ? "ml-auto" : ""}`}
-            >
-              {currentStep === 0 ? "Get Started" : "Next"}
-              <ArrowRight className="h-4 w-4" />
-            </Button>
+            currentStep === 2 ? (
+              swipeComplete ? (
+                <Button
+                  onClick={handleNext}
+                  className={`flex items-center gap-2 rounded-sm bg-primary text-primary-foreground hover:bg-primary/90 transition-all ${currentStep > 0 ? "ml-auto" : ""}`}
+                >
+                  Next
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              ) : (
+                <Button
+                  onClick={handleNext}
+                  disabled={true}
+                  className={`flex items-center gap-2 rounded-sm bg-primary text-primary-foreground hover:bg-primary/90 transition-all opacity-50 cursor-not-allowed ${currentStep > 0 ? "ml-auto" : ""}`}
+                >
+                  Complete swiping to continue
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              )
+            ) : (
+              <Button
+                onClick={handleNext}
+                className={`flex items-center gap-2 rounded-sm bg-primary text-primary-foreground hover:bg-primary/90 transition-all ${currentStep > 0 ? "ml-auto" : ""}`}
+              >
+                {currentStep === 0 ? "Get Started" : "Next"}
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            )
           ) : (
             <Button
               onClick={handleSubmit}
