@@ -32,7 +32,6 @@ import { Separator } from "@/components/ui/separator"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Switch } from "@/components/ui/switch"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 
 export default function ArtSubscription() {
   // State for current step
@@ -358,74 +357,112 @@ export default function ArtSubscription() {
     return [
       {
         id: 0,
-        style: "Abstract Expressionism",
-        image: "https://images.unsplash.com/photo-1543857778-c4a1a3e0b2eb?w=500&h=500&fit=crop",
-        artist: "Contemporary Artist",
+        style: "Abstract",
+        image: "https://m.media-amazon.com/images/I/51DjA2n+QYL._UXNaN_FMjpg_QL85_.jpg",
+        artist: "Contemporary Abstract Artist",
       },
       {
         id: 1,
-        style: "Impressionist",
-        image: "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=500&h=500&fit=crop",
-        artist: "Classical Style",
+        style: "Black & White",
+        image: "https://cyclingindependent.com/wp-content/uploads/2022/11/RUR-Shape-4-750x430.jpg",
+        artist: "Monochrome Photographer",
       },
       {
         id: 2,
-        style: "Cubism",
-        image: "https://images.unsplash.com/photo-1515405295579-ba7b45403062?w=500&h=500&fit=crop",
-        artist: "Modern Movement",
+        style: "Contemporary",
+        image:
+          "https://redtreetimes.com/wp-content/uploads/2016/10/yayoi-kusama-all-the-eternal-love-i-have-for-the-pumpkins-2016.jpg?w=768",
+        artist: "Modern Studio",
       },
       {
         id: 3,
-        style: "Surrealism",
-        image: "https://images.unsplash.com/photo-1547891654-e66ed7ebb968?w=500&h=500&fit=crop",
-        artist: "Dream-like Art",
+        style: "Cubism",
+        image:
+          "https://upload.wikimedia.org/wikipedia/en/thumb/8/8b/Pablo_Picasso,_1909,_Brick_Factory_at_Tortosa,_oil_on_canvas,_50.7_x_60.2_cm,_The_State_Hermitage_Museum,_Saint_Petersburg.jpg/330px-Pablo_Picasso,_1909,_Brick_Factory_at_Tortosa,_oil_on_canvas,_50.7_x_60.2_cm,_The_State_Hermitage_Museum,_Saint_Petersburg.jpg",
+        artist: "Cubist Master",
       },
       {
         id: 4,
-        style: "Pop Art",
-        image: "https://images.unsplash.com/photo-1605721911519-3dfeb3be25e7?w=500&h=500&fit=crop",
-        artist: "Bold & Vibrant",
-      },
-      {
-        id: 5,
-        style: "Minimalist",
-        image: "https://images.unsplash.com/photo-1552083974-186346191183?w=500&h=500&fit=crop",
-        artist: "Clean & Simple",
-      },
-      {
-        id: 6,
         style: "Digital Art",
-        image: "https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?w=500&h=500&fit=crop",
+        image: "https://cdn.inprnt.com/thumbs/11/b8/11b8120923b29073a19d2d8564228b3a.jpg",
         artist: "Digital Creator",
       },
       {
-        id: 7,
+        id: 5,
+        style: "Impressionist",
+        image: "https://galeriemontblanc.com/cdn/shop/files/Vue_avion_1.jpg?v=1731889683",
+        artist: "Classical Impressionist",
+      },
+      {
+        id: 6,
         style: "Landscape",
-        image: "https://images.unsplash.com/photo-1500964757637-c85e8a162699?w=500&h=500&fit=crop",
-        artist: "Nature Focused",
+        image:
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Themistokles_von_Eckenbrecher_Utsikt_over_L%C3%A6rdals%C3%B8ren.jpeg/1200px-Themistokles_von_Eckenbrecher_Utsikt_over_L%C3%A6rdals%C3%B8ren.jpeg",
+        artist: "Nature Painter",
+      },
+      {
+        id: 7,
+        style: "Minimalist",
+        image:
+          "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQYslGqXLPDTbM7Y4Dy7qJRXC8CPa_0dAUClKNeM39h9OiLrmG6",
+        artist: "Minimalist Designer",
       },
       {
         id: 8,
-        style: "Portrait",
-        image: "https://images.unsplash.com/photo-1578926288207-32356a2de21d?w=500&h=500&fit=crop",
-        artist: "Human Expression",
+        style: "Nature",
+        image:
+          "https://th-thumbnailer.cdn-si-edu.com/BNUNX1xJuq93KATbeIuAt2aXOYM=/1026x684/https://tf-cmsv2-smithsonianmag-media.s3.amazonaws.com/filer/25MikeReyfman_Waterfall.jpg",
+        artist: "Earth-Inspired Artist",
       },
       {
         id: 9,
+        style: "Pop Art",
+        image: "https://i.pinimg.com/originals/28/d8/9a/28d89a1a0e13f6912bbcdcf3659520b8.jpg",
+        artist: "Bold & Vibrant",
+      },
+      {
+        id: 10,
+        style: "Portrait",
+        image:
+          "https://media.meer.com/attachments/823e3abf8cd5ca97690888cf8e21b3ee0e7ef2a1/store/fill/860/645/67568b9166ef3f4eef54cc259f1951f7a178342cdfaa41fbfad508cff067/Girl-with-a-Pearl-Earring-is-an-oil-painting-by-Dutch-Golden-Age-painter-Johannes-Vermeer-dated.jpg",
+        artist: "Figurative Portraitist",
+      },
+      {
+        id: 11,
         style: "Still Life",
-        image: "https://images.unsplash.com/photo-1579762593175-20226054cad0?w=500&h=500&fit=crop",
-        artist: "Object Study",
+        image:
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Memling,_Hans_%E2%80%94_Flowers_in_a_Jug_(reverse).jpg/250px-Memling,_Hans_%E2%80%94_Flowers_in_a_Jug_(reverse).jpg",
+        artist: "Classical Still Life Painter",
+      },
+      {
+        id: 12,
+        style: "Surrealism",
+        image: "https://jimmoir.com/wp-content/uploads/2024/12/Batman-Ironing.jpg",
+        artist: "Dreamlike Visionary",
+      },
+      {
+        id: 13,
+        style: "Urban",
+        image: "https://i0.wp.com/manchesterbe.es/wp-content/uploads/2019/08/1111.jpg?resize=1024,683",
+        artist: "Cityscape Specialist",
+      },
+      {
+        id: 14,
+        style: "Watercolour",
+        image: "https://artsdot.com/ADC/Art.nsf/O/8XYCCS/$File/John-Singer-Sargent-White-Ships.JPG",
+        artist: "Delicate Wash Artist",
       },
     ]
   }
 
-  const handleSwipe = (direction, artworkId) => {
-    const newHistory = [...swipeHistory, { artworkId, direction, index: swipeIndex }]
+  // Update the handleSwipe function to handleRate
+  const handleRate = (rating, artworkId) => {
+    const newHistory = [...swipeHistory, { artworkId, rating, index: swipeIndex }]
     setSwipeHistory(newHistory)
 
     // Update ratings array to maintain compatibility with existing validation
     const updatedRatings = [...formData.ratings]
-    updatedRatings[swipeIndex] = direction === "right" ? "4" : direction === "up" ? "5" : "2"
+    updatedRatings[swipeIndex] = rating === "like" ? "4" : rating === "love" ? "5" : "2"
 
     setFormData({
       ...formData,
@@ -440,16 +477,17 @@ export default function ArtSubscription() {
     }
   }
 
+  // Update the handleUndo function
   const handleUndo = () => {
     if (swipeHistory.length > 0) {
-      const lastSwipe = swipeHistory[swipeHistory.length - 1]
+      const lastRating = swipeHistory[swipeHistory.length - 1]
       const newHistory = swipeHistory.slice(0, -1)
       setSwipeHistory(newHistory)
-      setSwipeIndex(lastSwipe.index)
+      setSwipeIndex(lastRating.index)
 
       // Clear the rating for this artwork
       const updatedRatings = [...formData.ratings]
-      updatedRatings[lastSwipe.index] = ""
+      updatedRatings[lastRating.index] = ""
 
       setFormData({
         ...formData,
@@ -461,7 +499,8 @@ export default function ArtSubscription() {
     }
   }
 
-  const handleSwipeComplete = () => {
+  // Update the handleSwipeComplete function to handleRatingComplete
+  const handleRatingComplete = () => {
     setShowContinuePrompt(false)
     // All 10 artworks have been rated, validation will pass
   }
@@ -614,65 +653,66 @@ export default function ArtSubscription() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 {[
-                  {
-                    name: "Abstract",
-                    image: "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=500&h=500&fit=crop",
-                  },
+                  { name: "Abstract", image: "https://m.media-amazon.com/images/I/51DjA2n+QYL._UXNaN_FMjpg_QL85_.jpg" },
                   {
                     name: "Impressionist",
-                    image: "https://images.unsplash.com/photo-1578321272176-b7bbc0679853?w=500&h=500&fit=crop",
+                    image: "https://galeriemontblanc.com/cdn/shop/files/Vue_avion_1.jpg?v=1731889683",
                   },
                   {
                     name: "Landscape",
-                    image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500&h=500&fit=crop",
+                    image:
+                      "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Themistokles_von_Eckenbrecher_Utsikt_over_L%C3%A6rdals%C3%B8ren.jpeg/1200px-Themistokles_von_Eckenbrecher_Utsikt_over_L%C3%A6rdals%C3%B8ren.jpeg",
                   },
                   {
                     name: "Portrait",
-                    image: "https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?w=500&h=500&fit=crop",
+                    image:
+                      "https://media.meer.com/attachments/823e3abf8cd5ca97690888cf8e21b3ee0e7ef2a1/store/fill/860/645/67568b9166ef3f4eef54cc259f1951f7a178342cdfaa41fbfad508cff067/Girl-with-a-Pearl-Earring-is-an-oil-painting-by-Dutch-Golden-Age-painter-Johannes-Vermeer-dated.jpg",
                   },
                   {
                     name: "Minimalist",
-                    image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500&h=500&fit=crop",
+                    image:
+                      "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQYslGqXLPDTbM7Y4Dy7qJRXC8CPa_0dAUClKNeM39h9OiLrmG6",
                   },
-                  {
-                    name: "Surrealism",
-                    image: "https://images.unsplash.com/photo-1578321272176-b7bbc0679853?w=500&h=500&fit=crop",
-                  },
+                  { name: "Surrealism", image: "https://jimmoir.com/wp-content/uploads/2024/12/Batman-Ironing.jpg" },
                   {
                     name: "Pop Art",
-                    image: "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=500&h=500&fit=crop",
+                    image: "https://i.pinimg.com/originals/28/d8/9a/28d89a1a0e13f6912bbcdcf3659520b8.jpg",
                   },
                   {
                     name: "Cubism",
-                    image: "https://images.unsplash.com/photo-1515405295579-ba7b45403062?w=500&h=500&fit=crop",
+                    image:
+                      "https://upload.wikimedia.org/wikipedia/en/thumb/8/8b/Pablo_Picasso,_1909,_Brick_Factory_at_Tortosa,_oil_on_canvas,_50.7_x_60.2_cm,_The_State_Hermitage_Museum,_Saint_Petersburg.jpg/330px-Pablo_Picasso,_1909,_Brick_Factory_at_Tortosa,_oil_on_canvas,_50.7_x_60.2_cm,_The_State_Hermitage_Museum,_Saint_Petersburg.jpg",
                   },
                   {
                     name: "Watercolor",
-                    image: "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=500&h=500&fit=crop",
+                    image: "https://artsdot.com/ADC/Art.nsf/O/8XYCCS/$File/John-Singer-Sargent-White-Ships.JPG",
                   },
                   {
                     name: "Still Life",
-                    image: "https://images.unsplash.com/photo-1579762593175-20226054cad0?w=500&h=500&fit=crop",
+                    image:
+                      "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Memling,_Hans_%E2%80%94_Flowers_in_a_Jug_(reverse).jpg/250px-Memling,_Hans_%E2%80%94_Flowers_in_a_Jug_(reverse).jpg",
                   },
                   {
                     name: "Urban",
-                    image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=500&h=500&fit=crop",
+                    image: "https://i0.wp.com/manchesterbe.es/wp-content/uploads/2019/08/1111.jpg?resize=1024,683",
                   },
                   {
                     name: "Nature",
-                    image: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=500&h=500&fit=crop",
+                    image:
+                      "https://th-thumbnailer.cdn-si-edu.com/BNUNX1xJuq93KATbeIuAt2aXOYM=/1026x684/https://tf-cmsv2-smithsonianmag-media.s3.amazonaws.com/filer/25MikeReyfman_Waterfall.jpg",
                   },
                   {
                     name: "Black & White",
-                    image: "https://images.unsplash.com/photo-1520209268518-aec60b8bb5ca?w=500&h=500&fit=crop",
+                    image: "https://cyclingindependent.com/wp-content/uploads/2022/11/RUR-Shape-4-750x430.jpg",
                   },
                   {
                     name: "Contemporary",
-                    image: "https://images.unsplash.com/photo-1549490349-8643362247b5?w=500&h=500&fit=crop",
+                    image:
+                      "https://redtreetimes.com/wp-content/uploads/2016/10/yayoi-kusama-all-the-eternal-love-i-have-for-the-pumpkins-2016.jpg?w=768",
                   },
                   {
                     name: "Digital Art",
-                    image: "https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?w=500&h=500&fit=crop",
+                    image: "https://cdn.inprnt.com/thumbs/11/b8/11b8120923b29073a19d2d8564228b3a.jpg",
                   },
                 ].map((style) => (
                   <div
@@ -771,8 +811,8 @@ export default function ArtSubscription() {
                 Refine Your Taste
               </CardTitle>
               <CardDescription className="text-base leading-relaxed">
-                Swipe through artworks to help us understand your preferences. Swipe right for pieces you like, left for
-                those you don't.
+                Rate artworks to help us understand your preferences. Use the thumbs up/down and heart buttons to
+                express your feelings about each piece.
               </CardDescription>
             </div>
 
@@ -782,13 +822,13 @@ export default function ArtSubscription() {
               </Alert>
             )}
 
-            <SwipeInterface
+            <RatingInterface
               artworks={getSwipeArtworks()}
-              onSwipe={handleSwipe}
+              onRate={handleRate}
               onUndo={handleUndo}
               currentIndex={swipeIndex}
-              swipeHistory={swipeHistory}
-              onComplete={handleSwipeComplete}
+              ratingHistory={swipeHistory}
+              onComplete={handleRatingComplete}
             />
           </div>
         )
@@ -818,8 +858,6 @@ export default function ArtSubscription() {
                 Yearly <Badge className="ml-1 bg-primary/20 text-primary">Save 15%</Badge>
               </span>
             </div>
-
-            
 
             <RadioGroup
               value={formData.subscriptionPlan}
@@ -1658,13 +1696,8 @@ export default function ArtSubscription() {
     }
   }
 
-  // Add this component before the return statement
-  const SwipeInterface = ({ artworks, onSwipe, onUndo, currentIndex, swipeHistory, onComplete }) => {
-    const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 })
-    const [isDragging, setIsDragging] = useState(false)
-    const [dragDirection, setDragDirection] = useState(null)
-    const [cardRef, setCardRef] = useState(null)
-
+  // Replace the SwipeInterface component with this new RatingInterface component
+  const RatingInterface = ({ artworks, onRate, onUndo, currentIndex, ratingHistory, onComplete }) => {
     const currentArtwork = artworks[currentIndex]
     const isComplete = currentIndex >= artworks.length
 
@@ -1673,12 +1706,12 @@ export default function ArtSubscription() {
       const handleKeyPress = (e) => {
         if (isComplete) return
 
-        if (e.key === "ArrowLeft") {
-          onSwipe("left", currentArtwork.id)
-        } else if (e.key === "ArrowRight") {
-          onSwipe("right", currentArtwork.id)
-        } else if (e.key === "ArrowUp") {
-          onSwipe("up", currentArtwork.id)
+        if (e.key === "ArrowLeft" || e.key === "1") {
+          onRate("dislike", currentArtwork.id)
+        } else if (e.key === "ArrowRight" || e.key === "2") {
+          onRate("like", currentArtwork.id)
+        } else if (e.key === "ArrowUp" || e.key === "3") {
+          onRate("love", currentArtwork.id)
         } else if (e.key === "z" && (e.ctrlKey || e.metaKey)) {
           e.preventDefault()
           onUndo()
@@ -1687,88 +1720,7 @@ export default function ArtSubscription() {
 
       window.addEventListener("keydown", handleKeyPress)
       return () => window.removeEventListener("keydown", handleKeyPress)
-    }, [currentArtwork, isComplete, onSwipe, onUndo])
-
-    // Mouse/touch handlers
-    const handleStart = (clientX, clientY) => {
-      setIsDragging(true)
-      setDragOffset({ x: 0, y: 0 })
-      setDragDirection(null)
-    }
-
-    const handleMove = (clientX, clientY, startX, startY) => {
-      if (!isDragging) return
-
-      const deltaX = clientX - startX
-      const deltaY = clientY - startY
-
-      setDragOffset({ x: deltaX, y: deltaY })
-
-      // Determine direction
-      if (Math.abs(deltaX) > Math.abs(deltaY)) {
-        setDragDirection(deltaX > 0 ? "right" : "left")
-      } else if (deltaY < -50) {
-        setDragDirection("up")
-      } else {
-        setDragDirection(null)
-      }
-    }
-
-    const handleEnd = () => {
-      if (!isDragging) return
-
-      const threshold = 100
-      const upThreshold = 80
-
-      if (Math.abs(dragOffset.x) > threshold) {
-        onSwipe(dragOffset.x > 0 ? "right" : "left", currentArtwork.id)
-      } else if (dragOffset.y < -upThreshold) {
-        onSwipe("up", currentArtwork.id)
-      }
-
-      setIsDragging(false)
-      setDragOffset({ x: 0, y: 0 })
-      setDragDirection(null)
-    }
-
-    // Mouse events
-    const handleMouseDown = (e) => {
-      const startX = e.clientX
-      const startY = e.clientY
-      handleStart(startX, startY)
-
-      const handleMouseMove = (e) => handleMove(e.clientX, e.clientY, startX, startY)
-      const handleMouseUp = () => {
-        handleEnd()
-        document.removeEventListener("mousemove", handleMouseMove)
-        document.removeEventListener("mouseup", handleMouseUp)
-      }
-
-      document.addEventListener("mousemove", handleMouseMove)
-      document.addEventListener("mouseup", handleMouseUp)
-    }
-
-    // Touch events
-    const handleTouchStart = (e) => {
-      const touch = e.touches[0]
-      const startX = touch.clientX
-      const startY = touch.clientY
-      handleStart(startX, startY)
-
-      const handleTouchMove = (e) => {
-        const touch = e.touches[0]
-        handleMove(touch.clientX, touch.clientY, startX, startY)
-      }
-
-      const handleTouchEnd = () => {
-        handleEnd()
-        document.removeEventListener("touchmove", handleTouchMove)
-        document.removeEventListener("touchend", handleTouchEnd)
-      }
-
-      document.addEventListener("touchmove", handleTouchMove)
-      document.addEventListener("touchend", handleTouchEnd)
-    }
+    }, [currentArtwork, isComplete, onRate, onUndo])
 
     if (isComplete) {
       return (
@@ -1783,7 +1735,7 @@ export default function ArtSubscription() {
 
           {showContinuePrompt && (
             <div className="bg-primary/5 p-6 rounded-lg border border-primary/20 text-center space-y-4">
-              <p className="font-medium">Want to keep swiping to improve your matches?</p>
+              <p className="font-medium">Want to keep rating to improve your matches?</p>
               <div className="flex gap-3 justify-center">
                 <Button
                   variant="outline"
@@ -1800,39 +1752,20 @@ export default function ArtSubscription() {
                   }}
                   className="bg-primary text-primary-foreground hover:bg-primary/90"
                 >
-                  Keep swiping
+                  Keep rating
                 </Button>
               </div>
             </div>
           )}
 
-          {swipeHistory.length > 0 && (
+          {ratingHistory.length > 0 && (
             <Button variant="ghost" onClick={onUndo} className="text-primary hover:bg-primary/10">
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Undo last swipe
+              Undo last rating
             </Button>
           )}
         </div>
       )
-    }
-
-    const getCardStyle = () => {
-      const rotation = dragOffset.x * 0.1
-      const scale = isDragging ? 0.95 : 1
-
-      return {
-        transform: `translate(${dragOffset.x}px, ${dragOffset.y}px) rotate(${rotation}deg) scale(${scale})`,
-        transition: isDragging ? "none" : "transform 0.3s ease-out",
-      }
-    }
-
-    const getOverlayOpacity = () => {
-      if (!dragDirection) return 0
-
-      if (dragDirection === "up") {
-        return Math.min(Math.abs(dragOffset.y) / 80, 1)
-      }
-      return Math.min(Math.abs(dragOffset.x) / 100, 1)
     }
 
     return (
@@ -1853,134 +1786,80 @@ export default function ArtSubscription() {
           </div>
         </div>
 
-        {/* Swipe instructions */}
+        {/* Rating instructions */}
         <div className="text-center space-y-2">
           <div className="flex items-center justify-center gap-6 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
-              <ArrowLeft className="h-4 w-4" />
+              <span className="text-red-600">👎</span>
               <span>Dislike</span>
             </div>
             <div className="flex items-center gap-2">
-              <ArrowRight className="h-4 w-4" />
+              <span className="text-green-600">👍</span>
               <span>Like</span>
             </div>
             <div className="flex items-center gap-2">
-              <Star className="h-4 w-4" />
+              <span className="text-purple-600">❤️</span>
               <span>Love</span>
             </div>
           </div>
-          <p className="text-xs text-muted-foreground">Use arrow keys or swipe on mobile</p>
+          <p className="text-xs text-muted-foreground">Use the buttons below or keyboard shortcuts (1, 2, 3)</p>
         </div>
 
-        {/* Card stack */}
-        <div className="relative w-full max-w-md h-96">
-          {/* Next card (background) */}
-          {currentIndex + 1 < artworks.length && (
-            <div className="absolute inset-0 bg-white rounded-xl shadow-lg border transform scale-95 opacity-50">
-              <div className="aspect-square relative rounded-t-xl overflow-hidden bg-muted">
-                <img
-                  src={artworks[currentIndex + 1].image || "/placeholder.svg"}
-                  alt={artworks[currentIndex + 1].style}
-                  className="object-cover w-full h-full"
-                />
-              </div>
-            </div>
-          )}
-
-          {/* Current card */}
-          <div
-            ref={cardRef}
-            className="absolute inset-0 bg-white rounded-xl shadow-lg border cursor-grab active:cursor-grabbing select-none"
-            style={getCardStyle()}
-            onMouseDown={handleMouseDown}
-            onTouchStart={handleTouchStart}
-          >
-            {/* Swipe overlays */}
-            <div
-              className="absolute inset-0 bg-green-500 rounded-xl flex items-center justify-center z-10"
-              style={{
-                opacity: dragDirection === "right" ? getOverlayOpacity() : 0,
-                transition: isDragging ? "none" : "opacity 0.2s",
-              }}
-            >
-              <div className="text-white text-2xl font-bold transform rotate-12">LIKE</div>
-            </div>
-
-            <div
-              className="absolute inset-0 bg-red-500 rounded-xl flex items-center justify-center z-10"
-              style={{
-                opacity: dragDirection === "left" ? getOverlayOpacity() : 0,
-                transition: isDragging ? "none" : "opacity 0.2s",
-              }}
-            >
-              <div className="text-white text-2xl font-bold transform -rotate-12">PASS</div>
-            </div>
-
-            <div
-              className="absolute inset-0 bg-purple-500 rounded-xl flex items-center justify-center z-10"
-              style={{
-                opacity: dragDirection === "up" ? getOverlayOpacity() : 0,
-                transition: isDragging ? "none" : "opacity 0.2s",
-              }}
-            >
-              <div className="text-white text-2xl font-bold">LOVE</div>
-            </div>
-
-            {/* Card content */}
-            <div className="aspect-square relative rounded-t-xl overflow-hidden bg-muted">
+        {/* Artwork display */}
+        <div className="w-full max-w-md">
+          <div className="bg-white rounded-xl shadow-lg border overflow-hidden">
+            <div className="aspect-square relative bg-muted">
               <img
                 src={currentArtwork.image || "/placeholder.svg"}
                 alt={currentArtwork.style}
                 className="object-cover w-full h-full"
-                draggable={false}
               />
             </div>
-
-            <div className="p-4 space-y-2">
-              <h3 className="font-serif text-lg font-medium">{currentArtwork.style}</h3>
-              <p className="text-sm text-muted-foreground">{currentArtwork.artist}</p>
+            <div className="p-6 space-y-2 text-center">
+              <h3 className="font-serif text-xl font-medium">{currentArtwork.style}</h3>
+              <p className="text-muted-foreground">{currentArtwork.artist}</p>
             </div>
           </div>
         </div>
 
-        {/* Desktop controls */}
-        <div className="hidden md:flex gap-4">
+        {/* Rating buttons */}
+        <div className="flex gap-4">
           <Button
             variant="outline"
             size="lg"
-            onClick={() => onSwipe("left", currentArtwork.id)}
-            className="border-red-200 text-red-600 hover:bg-red-50"
+            onClick={() => onRate("dislike", currentArtwork.id)}
+            className="border-red-200 text-red-600 hover:bg-red-50 px-8 py-4"
           >
-            <ArrowLeft className="h-5 w-5 mr-2" />
-            Pass
+            <span className="text-2xl mr-2">👎</span>
+            Dislike
           </Button>
 
           <Button
             variant="outline"
             size="lg"
-            onClick={() => onSwipe("up", currentArtwork.id)}
-            className="border-purple-200 text-purple-600 hover:bg-purple-50"
+            onClick={() => onRate("like", currentArtwork.id)}
+            className="border-green-200 text-green-600 hover:bg-green-50 px-8 py-4"
           >
-            <Star className="h-5 w-5 mr-2" />
-            Love
-          </Button>
-
-          <Button
-            variant="outline"
-            size="lg"
-            onClick={() => onSwipe("right", currentArtwork.id)}
-            className="border-green-200 text-green-600 hover:bg-green-50"
-          >
-            <ArrowRight className="h-5 w-5 mr-2" />
+            <span className="text-2xl mr-2">👍</span>
             Like
+          </Button>
+
+          <Button
+            variant="outline"
+            size="lg"
+            onClick={() => onRate("love", currentArtwork.id)}
+            className="border-purple-200 text-purple-600 hover:bg-purple-50 px-8 py-4"
+          >
+            <span className="text-2xl mr-2">❤️</span>
+            Love
           </Button>
         </div>
 
         {/* Undo button */}
-        {swipeHistory.length > 0 && (
+        {ratingHistory.length > 0 && (
           <Button variant="ghost" onClick={onUndo} className="text-primary hover:bg-primary/10">
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Undo last swipe
+            Undo last rating
           </Button>
         )}
       </div>
@@ -2007,16 +1886,21 @@ export default function ArtSubscription() {
   // Add a helper function to get artwork image for each index
   const getArtworkImageForIndex = (index) => {
     const images = [
-      "https://images.unsplash.com/photo-1543857778-c4a1a3e0b2eb?w=500&h=500&fit=crop", // Abstract Expressionism
-      "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=500&h=500&fit=crop", // Impressionist
-      "https://images.unsplash.com/photo-1515405295579-ba7b45403062?w=500&h=500&fit=crop", // Cubism
-      "https://images.unsplash.com/photo-1547891654-e66ed7ebb968?w=500&h=500&fit=crop", // Surrealism
-      "https://images.unsplash.com/photo-1605721911519-3dfeb3be25e7?w=500&h=500&fit=crop", // Pop Art
-      "https://images.unsplash.com/photo-1552083974-186346191183?w=500&h=500&fit=crop", // Minimalist
-      "https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?w=500&h=500&fit=crop", // Digital Art
-      "https://images.unsplash.com/photo-1500964757637-c85e8a162699?w=500&h=500&fit=crop", // Landscape
-      "https://images.unsplash.com/photo-1578926288207-32356a2de21d?w=500&h=500&fit=crop", // Portrait
-      "https://images.unsplash.com/photo-1579762593175-20226054cad0?w=500&h=500&fit=crop", // Still Life
+      "/abstract.jpg",
+      "/impressionist.jpg",
+      "/landscape.jpeg",
+      "/portrait.jpg",
+      "/minimalism.jpg",
+      "/surrealism.jpg",
+      "/pop_art.jpg",
+      "/cubism.jpg",
+      "/watercolour.jpg",
+      "/still_life.jpg",
+      "/urban.jpg",
+      "/nature.jpg",
+      "/black_white.jpeg",
+      "/contemporary.jpg",
+      "/digital.jpg",
     ]
     return images[index] || images[0]
   }
@@ -2134,7 +2018,7 @@ export default function ArtSubscription() {
                   disabled={true}
                   className={`flex items-center gap-2 rounded-sm bg-primary text-primary-foreground hover:bg-primary/90 transition-all opacity-50 cursor-not-allowed ${currentStep > 0 ? "ml-auto" : ""}`}
                 >
-                  Complete swiping to continue
+                  Complete rating to continue
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               )
