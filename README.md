@@ -28,3 +28,12 @@ Continue building your app on:
 2. Deploy your chats from the v0 interface
 3. Changes are automatically pushed to this repository
 4. Vercel deploys the latest version from this repository
+
+## Returning Customers
+
+The site now includes a login page for existing subscribers. After signing in,
+you can manage your account details from the **Account** page and further refine
+your art preferences using a simple rating interface. The **Order Prints** page
+lets you request new prints curated automatically or selected manually with your
+preferred artist, style or gallery. Delivery can be scheduled for a nominated
+day or at a specific time for an additional £5.
