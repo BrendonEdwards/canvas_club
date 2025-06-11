@@ -123,7 +123,7 @@ export default function ArtSubscription() {
         basePrice = 40
         break
       case "Custom":
-        basePrice = Number.parseInt(formData.customPieces) * 5
+        basePrice = Number.parseInt(formData.customPieces) * 10
         break
       default:
         basePrice = 0
@@ -235,8 +235,8 @@ export default function ArtSubscription() {
         }
         if (formData.subscriptionPlan === "Custom") {
           const pieces = Number.parseInt(formData.customPieces)
-          if (isNaN(pieces) || pieces < 1 || pieces > 10) {
-            newErrors.customPieces = "Please enter between 1-10 pieces"
+          if (isNaN(pieces) || pieces < 1 || pieces > 300) {
+            newErrors.customPieces = "Please enter between 1-30 pieces"
           }
         }
         break
@@ -936,14 +936,14 @@ export default function ArtSubscription() {
                     Custom
                   </Label>
                   <p className="text-muted-foreground mt-1 leading-relaxed">
-                    £{formData.billingCycle === "yearly" ? Math.round(5 * 12 * 0.85) / 12 : 5} per piece/month - Build
+                    £{formData.billingCycle === "yearly" ? Math.round(10 * 12 * 0.85) / 12 : 10} per piece/month - Build
                     your own quarterly collection
                   </p>
 
                   {formData.subscriptionPlan === "Custom" && (
                     <div className="mt-6 w-full max-w-xs">
                       <Label htmlFor="customPieces" className="text-sm">
-                        Number of pieces per month (1-10)
+                        Number of pieces per month (1-30)
                       </Label>
                       <div className="flex items-center gap-3 mt-2">
                         <Button
@@ -966,7 +966,7 @@ export default function ArtSubscription() {
                           id="customPieces"
                           type="number"
                           min="1"
-                          max="10"
+                          max="30"
                           value={formData.customPieces}
                           onChange={(e) => handleChange("customPieces", e.target.value)}
                           className="text-center h-10 rounded-sm shadow-subtle"
@@ -979,11 +979,11 @@ export default function ArtSubscription() {
                           className="h-10 w-10 rounded-sm border-primary/30 text-primary hover:bg-primary/10"
                           onClick={() => {
                             const current = Number.parseInt(formData.customPieces)
-                            if (current < 10) {
+                            if (current < 30) {
                               handleChange("customPieces", (current + 1).toString())
                             }
                           }}
-                          disabled={Number.parseInt(formData.customPieces) >= 10}
+                          disabled={Number.parseInt(formData.customPieces) >= 30}
                           aria-label="Increase number of pieces"
                         >
                           +
@@ -994,8 +994,8 @@ export default function ArtSubscription() {
                       <p className="text-sm font-medium mt-4">
                         Total: £
                         {formData.billingCycle === "yearly"
-                          ? Math.round(Number.parseInt(formData.customPieces) * 5 * 12 * 0.85) / 12
-                          : Number.parseInt(formData.customPieces) * 5}
+                          ? Math.round(Number.parseInt(formData.customPieces) * 10 * 12 * 0.85) / 12
+                          : Number.parseInt(formData.customPieces) * 10}
                         /month
                       </p>
                     </div>
