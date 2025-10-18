@@ -1,0 +1,62 @@
+[
+  {
+    "top_style": "Impressionism",
+    "sub_style": "Post-Impressionism",
+    "synonyms": ["Painterly", "Luminous"],
+    "visual_tags": ["soft brushwork", "diffused light", "plein air"],
+    "colour_traits": ["pastel", "sunlit", "high chroma"],
+    "motifs": ["landscapes", "water scenes", "urban leisure"],
+    "era_medium": ["19th century", "oil on canvas"],
+    "example_keywords": ["Monet", "Monet sunrise", "Seine reflections"]
+  },
+  {
+    "top_style": "Modernism",
+    "sub_style": "Bauhaus",
+    "synonyms": ["Functionalism", "Geometric Modern"],
+    "visual_tags": ["clean lines", "primary colours", "grid layouts"],
+    "colour_traits": ["primary palette", "neutral grounds"],
+    "motifs": ["architectural forms", "industrial design"],
+    "era_medium": ["1920s", "mixed media", "print"],
+    "example_keywords": ["Kandinsky composition", "Bauhaus poster"]
+  },
+  {
+    "top_style": "Contemporary",
+    "sub_style": "Digital Collage",
+    "synonyms": ["Mixed Media Digital", "Neo-Collage"],
+    "visual_tags": ["layered textures", "cut-out silhouettes", "glitch accents"],
+    "colour_traits": ["vibrant", "duotone", "metallic overlay"],
+    "motifs": ["surreal portraits", "pop culture fragments"],
+    "era_medium": ["21st century", "digital"],
+    "example_keywords": ["digital collage portrait", "contemporary mashup"]
+  },
+  {
+    "top_style": "Abstract",
+    "sub_style": "Colour Field",
+    "synonyms": ["Chromatic Abstraction", "Vast Fields"],
+    "visual_tags": ["large planes", "soft gradients", "meditative"],
+    "colour_traits": ["saturated", "tonal harmonies", "low contrast edges"],
+    "motifs": ["colour blocks", "spiritual contemplation"],
+    "era_medium": ["mid-century", "acrylic", "oil"],
+    "example_keywords": ["Rothko", "colour field canvas"]
+  },
+  {
+    "top_style": "Photography",
+    "sub_style": "Documentary",
+    "synonyms": ["Photojournalism", "Street Documentary"],
+    "visual_tags": ["candid", "high contrast", "human stories"],
+    "colour_traits": ["monochrome", "muted"],
+    "motifs": ["urban life", "social narrative", "portraits"],
+    "era_medium": ["20th century", "film", "digital"],
+    "example_keywords": ["Henri Cartier-Bresson", "street documentary"]
+  },
+  {
+    "top_style": "Classical",
+    "sub_style": "Neoclassicism",
+    "synonyms": ["Academic Classicism", "Grand Manner"],
+    "visual_tags": ["balanced composition", "idealised figures", "dramatic drapery"],
+    "colour_traits": ["earth tones", "tempered highlights"],
+    "motifs": ["mythology", "historical narrative"],
+    "era_medium": ["18th century", "oil on canvas"],
+    "example_keywords": ["Jacques-Louis David", "oath of the horatii"]
+  }
+]
