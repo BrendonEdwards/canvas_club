@@ -9,7 +9,12 @@ export async function POST(request: Request) {
   try {
     const file = await fs.readFile(filePath, 'utf8')
     const json = file ? JSON.parse(file) : {}
-    json[data.email ?? 'unknown'] = data.ratings
+    const email = data.email ?? 'unknown'
+    json[email] = {
+      ratings: data.ratings ?? {},
+      taste: data.taste ?? data.ratings ?? {},
+      updatedAt: new Date().toISOString(),
+    }
     await fs.writeFile(filePath, JSON.stringify(json, null, 2))
     return NextResponse.json({ ok: true })
   } catch (e) {
