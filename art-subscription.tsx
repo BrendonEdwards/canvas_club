@@ -32,14 +32,21 @@ import { Separator } from "@/components/ui/separator"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Switch } from "@/components/ui/switch"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { StyleSelector } from "@/components/StyleSelector"
+import { useAuth } from "@/hooks/use-auth"
+import { useRouter } from "next/navigation"
 
 export default function ArtSubscription() {
+  const router = useRouter()
+  const { login } = useAuth()
+
   // State for current step
   const [currentStep, setCurrentStep] = useState(0)
 
   // State for form data
   const [formData, setFormData] = useState({
     artStyles: [],
+    subStyles: [],
     ratings: Array(10).fill(""),
     subscriptionPlan: "",
     customPieces: "1",
@@ -184,6 +191,21 @@ export default function ArtSubscription() {
         ...formData,
         artStyles: updatedStyles,
       })
+    } else if (field === "subStyles") {
+      // Toggle the sub style in the array
+      const updatedSubStyles = [...formData.subStyles]
+      const index = updatedSubStyles.indexOf(value)
+
+      if (index === -1) {
+        updatedSubStyles.push(value)
+      } else {
+        updatedSubStyles.splice(index, 1)
+      }
+
+      setFormData({
+        ...formData,
+        subStyles: updatedSubStyles,
+      })
     } else if (field.startsWith("rating")) {
       // Update a specific rating
       const index = Number.parseInt(field.replace("rating", ""))
@@ -278,15 +300,58 @@ export default function ArtSubscription() {
   }
 
   // Handle submit
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (validateStep()) {
       setIsLoading(true)
 
-      // Simulate API call
-      setTimeout(() => {
+      try {
+        const res = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: formData.email,
+            password: 'password', // Auto-generated or default for this flow
+            name: formData.email.split('@')[0],
+            preferences: {
+              mainStyles: formData.artStyles,
+              subStyles: formData.subStyles,
+              ratings: formData.ratings.reduce((acc, rating, idx) => {
+                 if (rating) acc[idx] = parseInt(rating);
+                 return acc;
+              }, {})
+            },
+            subscription: {
+              plan: formData.subscriptionPlan,
+              piecesPerQuarter: formData.subscriptionPlan === 'Basic' ? 1 : formData.subscriptionPlan === 'Standard' ? 3 : 5,
+              price: priceBreakdown.total,
+              billingCycle: formData.billingCycle,
+              artistTier: formData.artistTier,
+              artType: formData.artType,
+              size: formData.size,
+              frameCommitment: formData.frameCommitment
+            }
+          })
+        })
+
+        if (res.ok) {
+           const user = await res.json()
+           login(user.email)
+           setIsLoading(false)
+           setShowSuccess(true)
+           // Redirect to dashboard after short delay
+           setTimeout(() => {
+             router.push('/dashboard')
+           }, 3000)
+        } else {
+           setIsLoading(false)
+           // Handle error (e.g. user exists)
+           const data = await res.json()
+           setErrors({ ...errors, email: data.error || 'Registration failed' })
+        }
+      } catch (e) {
         setIsLoading(false)
-        setShowSuccess(true)
-      }, 2000)
+        setErrors({ ...errors, email: 'Network error. Please try again.' })
+      }
     }
   }
 
@@ -650,155 +715,16 @@ export default function ArtSubscription() {
 
             <div className="space-y-6 mt-6">
               <Label className="text-lg font-medium">Select your preferred art styles (select all that apply)</Label>
+              <p className="text-sm text-muted-foreground">Click a style to select it. Click the expand button to see and select specific sub-styles.</p>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                {[
-                  { name: "Abstract", image: "https://m.media-amazon.com/images/I/51DjA2n+QYL._UXNaN_FMjpg_QL85_.jpg" },
-                  {
-                    name: "Impressionist",
-                    image: "https://galeriemontblanc.com/cdn/shop/files/Vue_avion_1.jpg?v=1731889683",
-                  },
-                  {
-                    name: "Landscape",
-                    image:
-                      "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Themistokles_von_Eckenbrecher_Utsikt_over_L%C3%A6rdals%C3%B8ren.jpeg/1200px-Themistokles_von_Eckenbrecher_Utsikt_over_L%C3%A6rdals%C3%B8ren.jpeg",
-                  },
-                  {
-                    name: "Portrait",
-                    image:
-                      "https://media.meer.com/attachments/823e3abf8cd5ca97690888cf8e21b3ee0e7ef2a1/store/fill/860/645/67568b9166ef3f4eef54cc259f1951f7a178342cdfaa41fbfad508cff067/Girl-with-a-Pearl-Earring-is-an-oil-painting-by-Dutch-Golden-Age-painter-Johannes-Vermeer-dated.jpg",
-                  },
-                  {
-                    name: "Minimalist",
-                    image:
-                      "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQYslGqXLPDTbM7Y4Dy7qJRXC8CPa_0dAUClKNeM39h9OiLrmG6",
-                  },
-                  { name: "Surrealism", image: "https://jimmoir.com/wp-content/uploads/2024/12/Batman-Ironing.jpg" },
-                  {
-                    name: "Pop Art",
-                    image: "https://i.pinimg.com/originals/28/d8/9a/28d89a1a0e13f6912bbcdcf3659520b8.jpg",
-                  },
-                  {
-                    name: "Cubism",
-                    image:
-                      "https://upload.wikimedia.org/wikipedia/en/thumb/8/8b/Pablo_Picasso,_1909,_Brick_Factory_at_Tortosa,_oil_on_canvas,_50.7_x_60.2_cm,_The_State_Hermitage_Museum,_Saint_Petersburg.jpg/330px-Pablo_Picasso,_1909,_Brick_Factory_at_Tortosa,_oil_on_canvas,_50.7_x_60.2_cm,_The_State_Hermitage_Museum,_Saint_Petersburg.jpg",
-                  },
-                  {
-                    name: "Watercolor",
-                    image: "https://artsdot.com/ADC/Art.nsf/O/8XYCCS/$File/John-Singer-Sargent-White-Ships.JPG",
-                  },
-                  {
-                    name: "Still Life",
-                    image:
-                      "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Memling,_Hans_%E2%80%94_Flowers_in_a_Jug_(reverse).jpg/250px-Memling,_Hans_%E2%80%94_Flowers_in_a_Jug_(reverse).jpg",
-                  },
-                  {
-                    name: "Urban",
-                    image: "https://i0.wp.com/manchesterbe.es/wp-content/uploads/2019/08/1111.jpg?resize=1024,683",
-                  },
-                  {
-                    name: "Nature",
-                    image:
-                      "https://th-thumbnailer.cdn-si-edu.com/BNUNX1xJuq93KATbeIuAt2aXOYM=/1026x684/https://tf-cmsv2-smithsonianmag-media.s3.amazonaws.com/filer/25MikeReyfman_Waterfall.jpg",
-                  },
-                  {
-                    name: "Black & White",
-                    image: "https://cyclingindependent.com/wp-content/uploads/2022/11/RUR-Shape-4-750x430.jpg",
-                  },
-                  {
-                    name: "Contemporary",
-                    image:
-                      "https://redtreetimes.com/wp-content/uploads/2016/10/yayoi-kusama-all-the-eternal-love-i-have-for-the-pumpkins-2016.jpg?w=768",
-                  },
-                  {
-                    name: "Digital Art",
-                    image: "https://cdn.inprnt.com/thumbs/11/b8/11b8120923b29073a19d2d8564228b3a.jpg",
-                  },
-                ].map((style) => (
-                  <div
-                    key={style.name}
-                    className={`flex flex-col space-y-3 p-4 rounded-lg border transition-all shadow-subtle hover:shadow-md ${
-                      formData.artStyles.includes(style.name) ? "border-primary bg-primary/5" : "border-border"
-                    }`}
-                  >
-                    <div className="w-full h-20 bg-muted rounded-md overflow-hidden">
-                      <img
-                        src={style.image || "/placeholder.svg"}
-                        alt={style.name}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <Checkbox
-                        id={`style-${style.name}`}
-                        checked={formData.artStyles.includes(style.name)}
-                        onCheckedChange={(checked) => {
-                          if (checked) {
-                            handleChange("artStyles", style.name)
-                          } else {
-                            handleChange("artStyles", style.name)
-                          }
-                        }}
-                        className="text-primary border-primary/50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
-                        aria-label={`Select ${style.name} style`}
-                      />
-                      <Label htmlFor={`style-${style.name}`} className="cursor-pointer w-full leading-relaxed">
-                        {style.name}
-                      </Label>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <StyleSelector
+                selectedStyles={formData.artStyles}
+                selectedSubStyles={formData.subStyles}
+                onToggleStyle={(style) => handleChange("artStyles", style)}
+                onToggleSubStyle={(subStyle) => handleChange("subStyles", subStyle)}
+              />
 
               {errors.artStyles && <p className="text-sm text-red-500 mt-2">{errors.artStyles}</p>}
-
-              {formData.artStyles.length > 0 && (
-                <div className="flex flex-wrap gap-2 mt-6 p-4 bg-primary/5 rounded-lg border border-primary/20">
-                  <span className="text-sm font-medium mr-2">Selected:</span>
-                  {formData.artStyles.map((style) => (
-                    <Badge key={style} variant="secondary" className="bg-white text-[#121212] shadow-subtle">
-                      {style}
-                    </Badge>
-                  ))}
-                </div>
-              )}
-
-              <div className="mt-6 p-4 border rounded-lg shadow-subtle bg-primary/5">
-                <h4 className="font-serif text-lg mb-2">Recommended for You</h4>
-                <p className="text-sm text-muted-foreground mb-4">Based on popular combinations:</p>
-                <div className="flex flex-wrap gap-2">
-                  {!formData.artStyles.includes("Abstract") && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleChange("artStyles", "Abstract")}
-                      className="border-primary/30 text-primary hover:bg-primary/10"
-                    >
-                      + Abstract
-                    </Button>
-                  )}
-                  {!formData.artStyles.includes("Minimalist") && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleChange("artStyles", "Minimalist")}
-                      className="border-primary/30 text-primary hover:bg-primary/10"
-                    >
-                      + Minimalist
-                    </Button>
-                  )}
-                  {!formData.artStyles.includes("Landscape") && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleChange("artStyles", "Landscape")}
-                      className="border-primary/30 text-primary hover:bg-primary/10"
-                    >
-                      + Landscape
-                    </Button>
-                  )}
-                </div>
-              </div>
             </div>
           </div>
         )
