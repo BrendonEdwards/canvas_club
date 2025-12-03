@@ -9,7 +9,6 @@ import { Checkbox } from "@/components/ui/checkbox"
 import {
   Loader2,
   Palette,
-  Star,
   CreditCard,
   Frame,
   CheckCircle,
@@ -32,15 +31,21 @@ import { Separator } from "@/components/ui/separator"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Switch } from "@/components/ui/switch"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { StyleSelector } from "@/components/StyleSelector"
+import { useAuth } from "@/hooks/use-auth"
+import { useRouter } from "next/navigation"
 
 export default function ArtSubscription() {
+  const router = useRouter()
+  const { login } = useAuth()
+
   // State for current step
   const [currentStep, setCurrentStep] = useState(0)
 
   // State for form data
   const [formData, setFormData] = useState({
     artStyles: [],
-    ratings: Array(10).fill(""),
+    subStyles: [],
     subscriptionPlan: "",
     customPieces: "1",
     artistTier: "Emerging",
@@ -51,6 +56,7 @@ export default function ArtSubscription() {
     paymentMethod: "card",
     savePaymentInfo: false,
     email: "",
+    password: "", // Added password field
     referralCode: "",
   })
 
@@ -100,12 +106,6 @@ export default function ArtSubscription() {
       A0: 4.0,
     },
   }
-
-  // Add these state variables after the existing ones
-  const [swipeIndex, setSwipeIndex] = useState(0)
-  const [swipeHistory, setSwipeHistory] = useState([])
-  const [swipeComplete, setSwipeComplete] = useState(false)
-  const [showContinuePrompt, setShowContinuePrompt] = useState(false)
 
   // Calculate final price based on selections
   const calculatePrice = () => {
@@ -184,15 +184,20 @@ export default function ArtSubscription() {
         ...formData,
         artStyles: updatedStyles,
       })
-    } else if (field.startsWith("rating")) {
-      // Update a specific rating
-      const index = Number.parseInt(field.replace("rating", ""))
-      const updatedRatings = [...formData.ratings]
-      updatedRatings[index] = value
+    } else if (field === "subStyles") {
+      // Toggle the sub style in the array
+      const updatedSubStyles = [...formData.subStyles]
+      const index = updatedSubStyles.indexOf(value)
+
+      if (index === -1) {
+        updatedSubStyles.push(value)
+      } else {
+        updatedSubStyles.splice(index, 1)
+      }
 
       setFormData({
         ...formData,
-        ratings: updatedRatings,
+        subStyles: updatedSubStyles,
       })
     } else {
       // Handle other fields normally
@@ -221,15 +226,7 @@ export default function ArtSubscription() {
           newErrors.artStyles = "Please select at least one art style"
         }
         break
-      case 2:
-        const emptyRatings = formData.ratings.some(
-          (rating) => !rating || Number.parseInt(rating) < 1 || Number.parseInt(rating) > 5,
-        )
-        if (emptyRatings) {
-          newErrors.ratings = "Please rate all artworks between 1-5"
-        }
-        break
-      case 3:
+      case 2: // Plan (was 3)
         if (!formData.subscriptionPlan) {
           newErrors.subscriptionPlan = "Please select a subscription plan"
         }
@@ -240,11 +237,16 @@ export default function ArtSubscription() {
           }
         }
         break
-      case 6:
+      case 5: // Checkout (was 6)
         if (!formData.email) {
           newErrors.email = "Please enter your email address"
         } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
           newErrors.email = "Please enter a valid email address"
+        }
+        if (!formData.password) {
+            newErrors.password = "Please create a password"
+        } else if (formData.password.length < 6) {
+            newErrors.password = "Password must be at least 6 characters"
         }
         break
       default:
@@ -278,15 +280,55 @@ export default function ArtSubscription() {
   }
 
   // Handle submit
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (validateStep()) {
       setIsLoading(true)
 
-      // Simulate API call
-      setTimeout(() => {
+      try {
+        const res = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: formData.email,
+            password: formData.password,
+            name: formData.email.split('@')[0],
+            preferences: {
+              mainStyles: formData.artStyles,
+              subStyles: formData.subStyles,
+              ratings: {} // Removed ratings
+            },
+            subscription: {
+              plan: formData.subscriptionPlan,
+              piecesPerQuarter: formData.subscriptionPlan === 'Basic' ? 1 : formData.subscriptionPlan === 'Standard' ? 3 : 5,
+              price: priceBreakdown.total,
+              billingCycle: formData.billingCycle,
+              artistTier: formData.artistTier,
+              artType: formData.artType,
+              size: formData.size,
+              frameCommitment: formData.frameCommitment
+            }
+          })
+        })
+
+        if (res.ok) {
+           const user = await res.json()
+           login(user.email)
+           setIsLoading(false)
+           setShowSuccess(true)
+           // Redirect to dashboard after short delay
+           setTimeout(() => {
+             router.push('/dashboard')
+           }, 3000)
+        } else {
+           setIsLoading(false)
+           // Handle error (e.g. user exists)
+           const data = await res.json()
+           setErrors({ ...errors, email: data.error || 'Registration failed' })
+        }
+      } catch (e) {
         setIsLoading(false)
-        setShowSuccess(true)
-      }, 2000)
+        setErrors({ ...errors, email: 'Network error. Please try again.' })
+      }
     }
   }
 
@@ -298,15 +340,13 @@ export default function ArtSubscription() {
       case 1:
         return <Palette className="h-5 w-5" />
       case 2:
-        return <Star className="h-5 w-5" />
+        return <CreditCard className="h-5 w-5" /> // Plan
       case 3:
-        return <CreditCard className="h-5 w-5" />
+        return <Frame className="h-5 w-5" /> // Customise
       case 4:
-        return <Frame className="h-5 w-5" />
+        return <CheckCircle className="h-5 w-5" /> // Review
       case 5:
-        return <CheckCircle className="h-5 w-5" />
-      case 6:
-        return <CreditCard className="h-5 w-5" />
+        return <CreditCard className="h-5 w-5" /> // Checkout
       default:
         return null
     }
@@ -320,14 +360,12 @@ export default function ArtSubscription() {
       case 1:
         return "Preferences"
       case 2:
-        return "Ratings"
-      case 3:
         return "Plan"
-      case 4:
+      case 3:
         return "Customise"
-      case 5:
+      case 4:
         return "Review"
-      case 6:
+      case 5:
         return "Checkout"
       default:
         return ""
@@ -344,165 +382,10 @@ export default function ArtSubscription() {
       case 1:
         return formData.artStyles.length > 0 ? "complete" : "incomplete"
       case 2:
-        return formData.ratings.every((rating) => rating) ? "complete" : "incomplete"
-      case 3:
         return formData.subscriptionPlan ? "complete" : "incomplete"
       default:
         return "complete"
     }
-  }
-
-  // Add these helper functions
-  const getSwipeArtworks = () => {
-    return [
-      {
-        id: 0,
-        style: "Abstract",
-        image: "https://m.media-amazon.com/images/I/51DjA2n+QYL._UXNaN_FMjpg_QL85_.jpg",
-        artist: "Contemporary Abstract Artist",
-      },
-      {
-        id: 1,
-        style: "Black & White",
-        image: "https://cyclingindependent.com/wp-content/uploads/2022/11/RUR-Shape-4-750x430.jpg",
-        artist: "Monochrome Photographer",
-      },
-      {
-        id: 2,
-        style: "Contemporary",
-        image:
-          "https://redtreetimes.com/wp-content/uploads/2016/10/yayoi-kusama-all-the-eternal-love-i-have-for-the-pumpkins-2016.jpg?w=768",
-        artist: "Modern Studio",
-      },
-      {
-        id: 3,
-        style: "Cubism",
-        image:
-          "https://upload.wikimedia.org/wikipedia/en/thumb/8/8b/Pablo_Picasso,_1909,_Brick_Factory_at_Tortosa,_oil_on_canvas,_50.7_x_60.2_cm,_The_State_Hermitage_Museum,_Saint_Petersburg.jpg/330px-Pablo_Picasso,_1909,_Brick_Factory_at_Tortosa,_oil_on_canvas,_50.7_x_60.2_cm,_The_State_Hermitage_Museum,_Saint_Petersburg.jpg",
-        artist: "Cubist Master",
-      },
-      {
-        id: 4,
-        style: "Digital Art",
-        image: "https://cdn.inprnt.com/thumbs/11/b8/11b8120923b29073a19d2d8564228b3a.jpg",
-        artist: "Digital Creator",
-      },
-      {
-        id: 5,
-        style: "Impressionist",
-        image: "https://galeriemontblanc.com/cdn/shop/files/Vue_avion_1.jpg?v=1731889683",
-        artist: "Classical Impressionist",
-      },
-      {
-        id: 6,
-        style: "Landscape",
-        image:
-          "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Themistokles_von_Eckenbrecher_Utsikt_over_L%C3%A6rdals%C3%B8ren.jpeg/1200px-Themistokles_von_Eckenbrecher_Utsikt_over_L%C3%A6rdals%C3%B8ren.jpeg",
-        artist: "Nature Painter",
-      },
-      {
-        id: 7,
-        style: "Minimalist",
-        image:
-          "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQYslGqXLPDTbM7Y4Dy7qJRXC8CPa_0dAUClKNeM39h9OiLrmG6",
-        artist: "Minimalist Designer",
-      },
-      {
-        id: 8,
-        style: "Nature",
-        image:
-          "https://th-thumbnailer.cdn-si-edu.com/BNUNX1xJuq93KATbeIuAt2aXOYM=/1026x684/https://tf-cmsv2-smithsonianmag-media.s3.amazonaws.com/filer/25MikeReyfman_Waterfall.jpg",
-        artist: "Earth-Inspired Artist",
-      },
-      {
-        id: 9,
-        style: "Pop Art",
-        image: "https://i.pinimg.com/originals/28/d8/9a/28d89a1a0e13f6912bbcdcf3659520b8.jpg",
-        artist: "Bold & Vibrant",
-      },
-      {
-        id: 10,
-        style: "Portrait",
-        image:
-          "https://media.meer.com/attachments/823e3abf8cd5ca97690888cf8e21b3ee0e7ef2a1/store/fill/860/645/67568b9166ef3f4eef54cc259f1951f7a178342cdfaa41fbfad508cff067/Girl-with-a-Pearl-Earring-is-an-oil-painting-by-Dutch-Golden-Age-painter-Johannes-Vermeer-dated.jpg",
-        artist: "Figurative Portraitist",
-      },
-      {
-        id: 11,
-        style: "Still Life",
-        image:
-          "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Memling,_Hans_%E2%80%94_Flowers_in_a_Jug_(reverse).jpg/250px-Memling,_Hans_%E2%80%94_Flowers_in_a_Jug_(reverse).jpg",
-        artist: "Classical Still Life Painter",
-      },
-      {
-        id: 12,
-        style: "Surrealism",
-        image: "https://jimmoir.com/wp-content/uploads/2024/12/Batman-Ironing.jpg",
-        artist: "Dreamlike Visionary",
-      },
-      {
-        id: 13,
-        style: "Urban",
-        image: "https://i0.wp.com/manchesterbe.es/wp-content/uploads/2019/08/1111.jpg?resize=1024,683",
-        artist: "Cityscape Specialist",
-      },
-      {
-        id: 14,
-        style: "Watercolour",
-        image: "https://artsdot.com/ADC/Art.nsf/O/8XYCCS/$File/John-Singer-Sargent-White-Ships.JPG",
-        artist: "Delicate Wash Artist",
-      },
-    ]
-  }
-
-  // Update the handleSwipe function to handleRate
-  const handleRate = (rating, artworkId) => {
-    const newHistory = [...swipeHistory, { artworkId, rating, index: swipeIndex }]
-    setSwipeHistory(newHistory)
-
-    // Update ratings array to maintain compatibility with existing validation
-    const updatedRatings = [...formData.ratings]
-    updatedRatings[swipeIndex] = rating === "like" ? "4" : rating === "love" ? "5" : "2"
-
-    setFormData({
-      ...formData,
-      ratings: updatedRatings,
-    })
-
-    if (swipeIndex < 9) {
-      setSwipeIndex(swipeIndex + 1)
-    } else {
-      setSwipeComplete(true)
-      setShowContinuePrompt(true)
-    }
-  }
-
-  // Update the handleUndo function
-  const handleUndo = () => {
-    if (swipeHistory.length > 0) {
-      const lastRating = swipeHistory[swipeHistory.length - 1]
-      const newHistory = swipeHistory.slice(0, -1)
-      setSwipeHistory(newHistory)
-      setSwipeIndex(lastRating.index)
-
-      // Clear the rating for this artwork
-      const updatedRatings = [...formData.ratings]
-      updatedRatings[lastRating.index] = ""
-
-      setFormData({
-        ...formData,
-        ratings: updatedRatings,
-      })
-
-      setSwipeComplete(false)
-      setShowContinuePrompt(false)
-    }
-  }
-
-  // Update the handleSwipeComplete function to handleRatingComplete
-  const handleRatingComplete = () => {
-    setShowContinuePrompt(false)
-    // All 10 artworks have been rated, validation will pass
   }
 
   // Render step content based on current step
@@ -650,189 +533,20 @@ export default function ArtSubscription() {
 
             <div className="space-y-6 mt-6">
               <Label className="text-lg font-medium">Select your preferred art styles (select all that apply)</Label>
+              <p className="text-sm text-muted-foreground">Click a style to select it. Click the expand button to see and select specific sub-styles.</p>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                {[
-                  { name: "Abstract", image: "https://m.media-amazon.com/images/I/51DjA2n+QYL._UXNaN_FMjpg_QL85_.jpg" },
-                  {
-                    name: "Impressionist",
-                    image: "https://galeriemontblanc.com/cdn/shop/files/Vue_avion_1.jpg?v=1731889683",
-                  },
-                  {
-                    name: "Landscape",
-                    image:
-                      "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Themistokles_von_Eckenbrecher_Utsikt_over_L%C3%A6rdals%C3%B8ren.jpeg/1200px-Themistokles_von_Eckenbrecher_Utsikt_over_L%C3%A6rdals%C3%B8ren.jpeg",
-                  },
-                  {
-                    name: "Portrait",
-                    image:
-                      "https://media.meer.com/attachments/823e3abf8cd5ca97690888cf8e21b3ee0e7ef2a1/store/fill/860/645/67568b9166ef3f4eef54cc259f1951f7a178342cdfaa41fbfad508cff067/Girl-with-a-Pearl-Earring-is-an-oil-painting-by-Dutch-Golden-Age-painter-Johannes-Vermeer-dated.jpg",
-                  },
-                  {
-                    name: "Minimalist",
-                    image:
-                      "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQYslGqXLPDTbM7Y4Dy7qJRXC8CPa_0dAUClKNeM39h9OiLrmG6",
-                  },
-                  { name: "Surrealism", image: "https://jimmoir.com/wp-content/uploads/2024/12/Batman-Ironing.jpg" },
-                  {
-                    name: "Pop Art",
-                    image: "https://i.pinimg.com/originals/28/d8/9a/28d89a1a0e13f6912bbcdcf3659520b8.jpg",
-                  },
-                  {
-                    name: "Cubism",
-                    image:
-                      "https://upload.wikimedia.org/wikipedia/en/thumb/8/8b/Pablo_Picasso,_1909,_Brick_Factory_at_Tortosa,_oil_on_canvas,_50.7_x_60.2_cm,_The_State_Hermitage_Museum,_Saint_Petersburg.jpg/330px-Pablo_Picasso,_1909,_Brick_Factory_at_Tortosa,_oil_on_canvas,_50.7_x_60.2_cm,_The_State_Hermitage_Museum,_Saint_Petersburg.jpg",
-                  },
-                  {
-                    name: "Watercolor",
-                    image: "https://artsdot.com/ADC/Art.nsf/O/8XYCCS/$File/John-Singer-Sargent-White-Ships.JPG",
-                  },
-                  {
-                    name: "Still Life",
-                    image:
-                      "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Memling,_Hans_%E2%80%94_Flowers_in_a_Jug_(reverse).jpg/250px-Memling,_Hans_%E2%80%94_Flowers_in_a_Jug_(reverse).jpg",
-                  },
-                  {
-                    name: "Urban",
-                    image: "https://i0.wp.com/manchesterbe.es/wp-content/uploads/2019/08/1111.jpg?resize=1024,683",
-                  },
-                  {
-                    name: "Nature",
-                    image:
-                      "https://th-thumbnailer.cdn-si-edu.com/BNUNX1xJuq93KATbeIuAt2aXOYM=/1026x684/https://tf-cmsv2-smithsonianmag-media.s3.amazonaws.com/filer/25MikeReyfman_Waterfall.jpg",
-                  },
-                  {
-                    name: "Black & White",
-                    image: "https://cyclingindependent.com/wp-content/uploads/2022/11/RUR-Shape-4-750x430.jpg",
-                  },
-                  {
-                    name: "Contemporary",
-                    image:
-                      "https://redtreetimes.com/wp-content/uploads/2016/10/yayoi-kusama-all-the-eternal-love-i-have-for-the-pumpkins-2016.jpg?w=768",
-                  },
-                  {
-                    name: "Digital Art",
-                    image: "https://cdn.inprnt.com/thumbs/11/b8/11b8120923b29073a19d2d8564228b3a.jpg",
-                  },
-                ].map((style) => (
-                  <div
-                    key={style.name}
-                    className={`flex flex-col space-y-3 p-4 rounded-lg border transition-all shadow-subtle hover:shadow-md ${
-                      formData.artStyles.includes(style.name) ? "border-primary bg-primary/5" : "border-border"
-                    }`}
-                  >
-                    <div className="w-full h-20 bg-muted rounded-md overflow-hidden">
-                      <img
-                        src={style.image || "/placeholder.svg"}
-                        alt={style.name}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <Checkbox
-                        id={`style-${style.name}`}
-                        checked={formData.artStyles.includes(style.name)}
-                        onCheckedChange={(checked) => {
-                          if (checked) {
-                            handleChange("artStyles", style.name)
-                          } else {
-                            handleChange("artStyles", style.name)
-                          }
-                        }}
-                        className="text-primary border-primary/50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
-                        aria-label={`Select ${style.name} style`}
-                      />
-                      <Label htmlFor={`style-${style.name}`} className="cursor-pointer w-full leading-relaxed">
-                        {style.name}
-                      </Label>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <StyleSelector
+                selectedStyles={formData.artStyles}
+                selectedSubStyles={formData.subStyles}
+                onToggleStyle={(style) => handleChange("artStyles", style)}
+                onToggleSubStyle={(subStyle) => handleChange("subStyles", subStyle)}
+              />
 
               {errors.artStyles && <p className="text-sm text-red-500 mt-2">{errors.artStyles}</p>}
-
-              {formData.artStyles.length > 0 && (
-                <div className="flex flex-wrap gap-2 mt-6 p-4 bg-primary/5 rounded-lg border border-primary/20">
-                  <span className="text-sm font-medium mr-2">Selected:</span>
-                  {formData.artStyles.map((style) => (
-                    <Badge key={style} variant="secondary" className="bg-white text-[#121212] shadow-subtle">
-                      {style}
-                    </Badge>
-                  ))}
-                </div>
-              )}
-
-              <div className="mt-6 p-4 border rounded-lg shadow-subtle bg-primary/5">
-                <h4 className="font-serif text-lg mb-2">Recommended for You</h4>
-                <p className="text-sm text-muted-foreground mb-4">Based on popular combinations:</p>
-                <div className="flex flex-wrap gap-2">
-                  {!formData.artStyles.includes("Abstract") && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleChange("artStyles", "Abstract")}
-                      className="border-primary/30 text-primary hover:bg-primary/10"
-                    >
-                      + Abstract
-                    </Button>
-                  )}
-                  {!formData.artStyles.includes("Minimalist") && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleChange("artStyles", "Minimalist")}
-                      className="border-primary/30 text-primary hover:bg-primary/10"
-                    >
-                      + Minimalist
-                    </Button>
-                  )}
-                  {!formData.artStyles.includes("Landscape") && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleChange("artStyles", "Landscape")}
-                      className="border-primary/30 text-primary hover:bg-primary/10"
-                    >
-                      + Landscape
-                    </Button>
-                  )}
-                </div>
-              </div>
             </div>
           </div>
         )
       case 2:
-        return (
-          <div className="space-y-8 p-6">
-            <div className="space-y-3">
-              <CardTitle className="flex items-center gap-3 text-2xl font-serif">
-                <Star className="h-6 w-6 text-primary" />
-                Refine Your Taste
-              </CardTitle>
-              <CardDescription className="text-base leading-relaxed">
-                Rate artworks to help us understand your preferences. Use the thumbs up/down and heart buttons to
-                express your feelings about each piece.
-              </CardDescription>
-            </div>
-
-            {errors.ratings && (
-              <Alert variant="destructive" className="rounded-lg shadow-subtle">
-                <AlertDescription>{errors.ratings}</AlertDescription>
-              </Alert>
-            )}
-
-            <RatingInterface
-              artworks={getSwipeArtworks()}
-              onRate={handleRate}
-              onUndo={handleUndo}
-              currentIndex={swipeIndex}
-              ratingHistory={swipeHistory}
-              onComplete={handleRatingComplete}
-            />
-          </div>
-        )
-      case 3:
         return (
           <div className="space-y-8 p-6">
             <div className="space-y-3">
@@ -1007,7 +721,7 @@ export default function ArtSubscription() {
             {errors.subscriptionPlan && <p className="text-sm text-red-500 mt-2">{errors.subscriptionPlan}</p>}
           </div>
         )
-      case 4:
+      case 3:
         return (
           <div className="space-y-8 p-6">
             <div className="space-y-3">
@@ -1312,7 +1026,7 @@ export default function ArtSubscription() {
             </div>
           </div>
         )
-      case 5:
+      case 4:
         return (
           <div className="space-y-8 p-6">
             <div className="space-y-3">
@@ -1471,7 +1185,7 @@ export default function ArtSubscription() {
             </div>
           </div>
         )
-      case 6:
+      case 5:
         return (
           <div className="space-y-8 p-6">
             <div className="space-y-3">
@@ -1587,6 +1301,22 @@ export default function ArtSubscription() {
                     </div>
 
                     <div className="space-y-2">
+                      <Label htmlFor="password" className="font-medium">
+                        Create Password
+                      </Label>
+                      <Input
+                        id="password"
+                        type="password"
+                        value={formData.password}
+                        onChange={(e) => handleChange("password", e.target.value)}
+                        placeholder="Min 6 characters"
+                        className="h-12 rounded-sm shadow-subtle"
+                        aria-required="true"
+                      />
+                      {errors.password && <p className="text-sm text-red-500">{errors.password}</p>}
+                    </div>
+
+                    <div className="space-y-2">
                       <Label htmlFor="referralCode" className="font-medium">
                         Referral Code (Optional)
                       </Label>
@@ -1696,215 +1426,6 @@ export default function ArtSubscription() {
     }
   }
 
-  // Replace the SwipeInterface component with this new RatingInterface component
-  const RatingInterface = ({ artworks, onRate, onUndo, currentIndex, ratingHistory, onComplete }) => {
-    const currentArtwork = artworks[currentIndex]
-    const isComplete = currentIndex >= artworks.length
-
-    // Handle keyboard controls for desktop
-    useEffect(() => {
-      const handleKeyPress = (e) => {
-        if (isComplete) return
-
-        if (e.key === "ArrowLeft" || e.key === "1") {
-          onRate("dislike", currentArtwork.id)
-        } else if (e.key === "ArrowRight" || e.key === "2") {
-          onRate("like", currentArtwork.id)
-        } else if (e.key === "ArrowUp" || e.key === "3") {
-          onRate("love", currentArtwork.id)
-        } else if (e.key === "z" && (e.ctrlKey || e.metaKey)) {
-          e.preventDefault()
-          onUndo()
-        }
-      }
-
-      window.addEventListener("keydown", handleKeyPress)
-      return () => window.removeEventListener("keydown", handleKeyPress)
-    }, [currentArtwork, isComplete, onRate, onUndo])
-
-    if (isComplete) {
-      return (
-        <div className="flex flex-col items-center space-y-6">
-          <div className="text-center space-y-4">
-            <CheckCircle className="h-16 w-16 text-primary mx-auto" />
-            <h3 className="text-xl font-serif">Perfect! We've got a good sense of your style.</h3>
-            <p className="text-muted-foreground">
-              Based on your preferences, we'll curate artwork that matches your taste.
-            </p>
-          </div>
-
-          {showContinuePrompt && (
-            <div className="bg-primary/5 p-6 rounded-lg border border-primary/20 text-center space-y-4">
-              <p className="font-medium">Want to keep rating to improve your matches?</p>
-              <div className="flex gap-3 justify-center">
-                <Button
-                  variant="outline"
-                  onClick={onComplete}
-                  className="border-primary/30 text-primary hover:bg-primary/10"
-                >
-                  I'm happy with this
-                </Button>
-                <Button
-                  onClick={() => {
-                    setSwipeIndex(0)
-                    setSwipeComplete(false)
-                    setShowContinuePrompt(false)
-                  }}
-                  className="bg-primary text-primary-foreground hover:bg-primary/90"
-                >
-                  Keep rating
-                </Button>
-              </div>
-            </div>
-          )}
-
-          {ratingHistory.length > 0 && (
-            <Button variant="ghost" onClick={onUndo} className="text-primary hover:bg-primary/10">
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Undo last rating
-            </Button>
-          )}
-        </div>
-      )
-    }
-
-    return (
-      <div className="flex flex-col items-center space-y-6">
-        {/* Progress indicator */}
-        <div className="w-full max-w-md">
-          <div className="flex justify-between text-sm text-muted-foreground mb-2">
-            <span>Progress</span>
-            <span>
-              {currentIndex + 1} of {artworks.length}
-            </span>
-          </div>
-          <div className="w-full bg-gray-200 h-2 rounded-full">
-            <div
-              className="bg-primary h-2 rounded-full transition-all duration-300"
-              style={{ width: `${((currentIndex + 1) / artworks.length) * 100}%` }}
-            />
-          </div>
-        </div>
-
-        {/* Rating instructions */}
-        <div className="text-center space-y-2">
-          <div className="flex items-center justify-center gap-6 text-sm text-muted-foreground">
-            <div className="flex items-center gap-2">
-              <span className="text-red-600">👎</span>
-              <span>Dislike</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-green-600">👍</span>
-              <span>Like</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-purple-600">❤️</span>
-              <span>Love</span>
-            </div>
-          </div>
-          <p className="text-xs text-muted-foreground">Use the buttons below or keyboard shortcuts (1, 2, 3)</p>
-        </div>
-
-        {/* Artwork display */}
-        <div className="w-full max-w-md">
-          <div className="bg-white rounded-xl shadow-lg border overflow-hidden">
-            <div className="aspect-square relative bg-muted">
-              <img
-                src={currentArtwork.image || "/placeholder.svg"}
-                alt={currentArtwork.style}
-                className="object-cover w-full h-full"
-              />
-            </div>
-            <div className="p-6 space-y-2 text-center">
-              <h3 className="font-serif text-xl font-medium">{currentArtwork.style}</h3>
-              <p className="text-muted-foreground">{currentArtwork.artist}</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Rating buttons */}
-        <div className="flex gap-4">
-          <Button
-            variant="outline"
-            size="lg"
-            onClick={() => onRate("dislike", currentArtwork.id)}
-            className="border-red-200 text-red-600 hover:bg-red-50 px-8 py-4"
-          >
-            <span className="text-2xl mr-2">👎</span>
-            Dislike
-          </Button>
-
-          <Button
-            variant="outline"
-            size="lg"
-            onClick={() => onRate("like", currentArtwork.id)}
-            className="border-green-200 text-green-600 hover:bg-green-50 px-8 py-4"
-          >
-            <span className="text-2xl mr-2">👍</span>
-            Like
-          </Button>
-
-          <Button
-            variant="outline"
-            size="lg"
-            onClick={() => onRate("love", currentArtwork.id)}
-            className="border-purple-200 text-purple-600 hover:bg-purple-50 px-8 py-4"
-          >
-            <span className="text-2xl mr-2">❤️</span>
-            Love
-          </Button>
-        </div>
-
-        {/* Undo button */}
-        {ratingHistory.length > 0 && (
-          <Button variant="ghost" onClick={onUndo} className="text-primary hover:bg-primary/10">
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Undo last rating
-          </Button>
-        )}
-      </div>
-    )
-  }
-
-  // Add a helper function to get art style for each artwork
-  const getArtStyleForIndex = (index) => {
-    const styles = [
-      "Abstract Expressionism",
-      "Impressionist",
-      "Cubism",
-      "Surrealism",
-      "Pop Art",
-      "Minimalist",
-      "Digital Art",
-      "Landscape",
-      "Portrait",
-      "Still Life",
-    ]
-    return styles[index] || "Contemporary"
-  }
-
-  // Add a helper function to get artwork image for each index
-  const getArtworkImageForIndex = (index) => {
-    const images = [
-      "/abstract.jpg",
-      "/impressionist.jpg",
-      "/landscape.jpeg",
-      "/portrait.jpg",
-      "/minimalism.jpg",
-      "/surrealism.jpg",
-      "/pop_art.jpg",
-      "/cubism.jpg",
-      "/watercolour.jpg",
-      "/still_life.jpg",
-      "/urban.jpg",
-      "/nature.jpg",
-      "/black_white.jpeg",
-      "/contemporary.jpg",
-      "/digital.jpg",
-    ]
-    return images[index] || images[0]
-  }
-
   return (
     <div className="flex justify-center items-center min-h-screen bg-[#FAFAFA] p-6">
       <Card className="w-full max-w-4xl shadow-subtle rounded-lg overflow-hidden">
@@ -1940,18 +1461,18 @@ export default function ArtSubscription() {
               </CollapsibleContent>
             </Collapsible>
 
-            <div className="hidden md:block text-sm text-muted-foreground">Step {currentStep} of 6</div>
+            <div className="hidden md:block text-sm text-muted-foreground">Step {currentStep + 1} of 6</div>
           </div>
 
           <div className="w-full bg-gray-200 h-2 rounded-full mt-4">
             <div
               className="bg-primary h-2 rounded-full transition-all duration-300"
-              style={{ width: `${(currentStep / 6) * 100}%` }}
+              style={{ width: `${((currentStep + 1) / 6) * 100}%` }}
             ></div>
           </div>
 
           <div className="flex justify-between mt-4">
-            {Array.from({ length: 7 }).map((_, index) => {
+            {Array.from({ length: 6 }).map((_, index) => {
               const status = getStepStatus(index)
               return (
                 <div
@@ -2002,27 +1523,7 @@ export default function ArtSubscription() {
             </Button>
           )}
 
-          {currentStep < 6 ? (
-            currentStep === 2 ? (
-              swipeComplete ? (
-                <Button
-                  onClick={handleNext}
-                  className={`flex items-center gap-2 rounded-sm bg-primary text-primary-foreground hover:bg-primary/90 transition-all ${currentStep > 0 ? "ml-auto" : ""}`}
-                >
-                  Next
-                  <ArrowRight className="h-4 w-4" />
-                </Button>
-              ) : (
-                <Button
-                  onClick={handleNext}
-                  disabled={true}
-                  className={`flex items-center gap-2 rounded-sm bg-primary text-primary-foreground hover:bg-primary/90 transition-all opacity-50 cursor-not-allowed ${currentStep > 0 ? "ml-auto" : ""}`}
-                >
-                  Complete rating to continue
-                  <ArrowRight className="h-4 w-4" />
-                </Button>
-              )
-            ) : (
+          {currentStep < 5 ? (
               <Button
                 onClick={handleNext}
                 className={`flex items-center gap-2 rounded-sm bg-primary text-primary-foreground hover:bg-primary/90 transition-all ${currentStep > 0 ? "ml-auto" : ""}`}
@@ -2030,7 +1531,6 @@ export default function ArtSubscription() {
                 {currentStep === 0 ? "Get Started" : "Next"}
                 <ArrowRight className="h-4 w-4" />
               </Button>
-            )
           ) : (
             <Button
               onClick={handleSubmit}
