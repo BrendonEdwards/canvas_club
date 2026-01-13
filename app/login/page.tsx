@@ -7,12 +7,14 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
 import { useAuth } from "@/hooks/use-auth"
+import { Apple, Chrome, Eye, EyeOff } from "lucide-react"
 
 export default function LoginPage() {
   const router = useRouter()
   const { login } = useAuth()
   const [formData, setFormData] = useState({ email: "", password: "" })
   const [error, setError] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -48,15 +50,48 @@ export default function LoginPage() {
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              name="password"
-              type="password"
-              value={formData.password}
-              onChange={handleChange}
-            />
+            <div className="relative">
+              <Input
+                id="password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                value={formData.password}
+                onChange={handleChange}
+                className="pr-10"
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="absolute right-2 top-1/2 h-8 w-8 -translate-y-1/2 text-muted-foreground hover:text-primary"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </Button>
+            </div>
+            <Link href="/reset-password" className="text-xs text-muted-foreground underline">
+              Forgot Password?
+            </Link>
           </div>
           {error && <p className="text-sm text-destructive">{error}</p>}
+        </div>
+        <div className="space-y-3">
+          <div className="flex items-center gap-4 text-xs uppercase text-muted-foreground">
+            <span className="h-px flex-1 bg-border" />
+            <span>Or continue with</span>
+            <span className="h-px flex-1 bg-border" />
+          </div>
+          <div className="grid gap-3">
+            <Button type="button" variant="outline" className="w-full gap-2">
+              <Chrome className="h-4 w-4" />
+              Continue with Google
+            </Button>
+            <Button type="button" variant="outline" className="w-full gap-2">
+              <Apple className="h-4 w-4" />
+              Continue with Apple
+            </Button>
+          </div>
         </div>
         <Button type="submit" className="w-full">
           Login

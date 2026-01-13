@@ -36,6 +36,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 export default function ArtSubscription() {
   // State for current step
   const [currentStep, setCurrentStep] = useState(0)
+  const totalSteps = 7
 
   // State for form data
   const [formData, setFormData] = useState({
@@ -107,27 +108,50 @@ export default function ArtSubscription() {
   const [swipeComplete, setSwipeComplete] = useState(false)
   const [showContinuePrompt, setShowContinuePrompt] = useState(false)
 
-  // Calculate final price based on selections
-  const calculatePrice = () => {
-    let basePrice = 0
+  const formatCurrency = (amount) => `£${amount.toFixed(2)}`
 
-    // Base subscription price
+  const getBasePrice = () => {
     switch (formData.subscriptionPlan) {
       case "Basic":
-        basePrice = 10
-        break
+        return 10
       case "Standard":
-        basePrice = 25
-        break
+        return 25
       case "Premium":
-        basePrice = 40
-        break
+        return 40
       case "Custom":
-        basePrice = Number.parseInt(formData.customPieces) * 10
-        break
+        const pieces = Number.parseInt(formData.customPieces)
+        return Number.isNaN(pieces) ? 0 : pieces * 10
       default:
-        basePrice = 0
+        return 0
     }
+  }
+
+  const getArtistTierPrice = (tier) => {
+    const basePrice = getBasePrice()
+    const multiplier = priceMultipliers.artistTier[tier] || 1
+    return basePrice * (multiplier - 1)
+  }
+
+  const getArtTypePrice = (type) => {
+    const basePrice = getBasePrice()
+    const artistTierPrice = getArtistTierPrice(formData.artistTier)
+    const multiplier = priceMultipliers.artType[type] || 1
+    return (basePrice + artistTierPrice) * (multiplier - 1)
+  }
+
+  const getSizePrice = (size) => {
+    const basePrice = getBasePrice()
+    const artistTierPrice = getArtistTierPrice(formData.artistTier)
+    const artTypePrice = getArtTypePrice(formData.artType)
+    const multiplier = priceMultipliers.size[size] || 1
+    return (basePrice + artistTierPrice + artTypePrice) * (multiplier - 1)
+  }
+
+  const formatAddonPrice = (amount) => `+${formatCurrency(amount)}`
+
+  // Calculate final price based on selections
+  const calculatePrice = () => {
+    const basePrice = getBasePrice()
 
     // Apply multipliers
     const artistTierMultiplier = priceMultipliers.artistTier[formData.artistTier] || 1
@@ -518,6 +542,15 @@ export default function ArtSubscription() {
               <CardDescription className="text-lg leading-relaxed">
                 A quarterly art subscription that transforms your home and supports emerging artists
               </CardDescription>
+              <div className="flex justify-center">
+                <Button
+                  onClick={handleNext}
+                  className="mt-4 rounded-sm bg-primary text-primary-foreground hover:bg-primary/90"
+                >
+                  Get Started
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-10">
@@ -649,6 +682,12 @@ export default function ArtSubscription() {
             </div>
 
             <div className="space-y-6 mt-6">
+              {errors.artStyles && (
+                <Alert variant="destructive" className="rounded-lg shadow-subtle">
+                  <AlertDescription>{errors.artStyles}</AlertDescription>
+                </Alert>
+              )}
+
               <Label className="text-lg font-medium">Select your preferred art styles (select all that apply)</Label>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
@@ -749,8 +788,6 @@ export default function ArtSubscription() {
                   </div>
                 ))}
               </div>
-
-              {errors.artStyles && <p className="text-sm text-red-500 mt-2">{errors.artStyles}</p>}
 
               {formData.artStyles.length > 0 && (
                 <div className="flex flex-wrap gap-2 mt-6 p-4 bg-primary/5 rounded-lg border border-primary/20">
@@ -1041,7 +1078,7 @@ export default function ArtSubscription() {
                         </Label>
                         <p className="text-muted-foreground mt-2 leading-relaxed">New talent with fresh perspectives</p>
                         <Badge variant="outline" className="mt-4 w-fit border-primary/30 text-primary">
-                          Base Price
+                          {formatAddonPrice(0)}
                         </Badge>
                       </div>
 
@@ -1056,7 +1093,7 @@ export default function ArtSubscription() {
                           Established with growing recognisition
                         </p>
                         <Badge variant="outline" className="mt-4 w-fit border-primary/30 text-primary">
-                          1.8x Multiplier
+                          {formatAddonPrice(getArtistTierPrice("Mid-Career"))}
                         </Badge>
                       </div>
 
@@ -1071,7 +1108,7 @@ export default function ArtSubscription() {
                           Renowned artists with significant impact
                         </p>
                         <Badge variant="outline" className="mt-4 w-fit border-primary/30 text-primary">
-                          3.5x Multiplier
+                          {formatAddonPrice(getArtistTierPrice("Established"))}
                         </Badge>
                       </div>
                     </RadioGroup>
@@ -1097,7 +1134,7 @@ export default function ArtSubscription() {
                         </Label>
                         <p className="text-muted-foreground mt-2 leading-relaxed">High-quality reproduction</p>
                         <Badge variant="outline" className="mt-4 w-fit border-primary/30 text-primary">
-                          Base Price
+                          {formatAddonPrice(0)}
                         </Badge>
                       </div>
 
@@ -1110,7 +1147,7 @@ export default function ArtSubscription() {
                         </Label>
                         <p className="text-muted-foreground mt-2 leading-relaxed">Numbered and signed by the artist</p>
                         <Badge variant="outline" className="mt-4 w-fit border-primary/30 text-primary">
-                          2.5x Multiplier
+                          {formatAddonPrice(getArtTypePrice("Limited Edition Print"))}
                         </Badge>
                       </div>
 
@@ -1123,7 +1160,7 @@ export default function ArtSubscription() {
                         </Label>
                         <p className="text-muted-foreground mt-2 leading-relaxed">One-of-a-kind original artwork</p>
                         <Badge variant="outline" className="mt-4 w-fit border-primary/30 text-primary">
-                          8x Multiplier
+                          {formatAddonPrice(getArtTypePrice("Original"))}
                         </Badge>
                       </div>
                     </RadioGroup>
@@ -1174,7 +1211,7 @@ export default function ArtSubscription() {
                           </Label>
                           <p className="text-muted-foreground mt-2 leading-relaxed">21.0 × 29.7 cm</p>
                           <Badge variant="outline" className="mt-4 w-fit border-primary/30 text-primary">
-                            Base Price
+                            {formatAddonPrice(0)}
                           </Badge>
                         </div>
 
@@ -1187,7 +1224,7 @@ export default function ArtSubscription() {
                           </Label>
                           <p className="text-muted-foreground mt-2 leading-relaxed">29.7 × 42.0 cm</p>
                           <Badge variant="outline" className="mt-4 w-fit border-primary/30 text-primary">
-                            1.25x Multiplier
+                            {formatAddonPrice(getSizePrice("A3"))}
                           </Badge>
                         </div>
 
@@ -1200,7 +1237,7 @@ export default function ArtSubscription() {
                           </Label>
                           <p className="text-muted-foreground mt-2 leading-relaxed">42.0 × 59.4 cm</p>
                           <Badge variant="outline" className="mt-4 w-fit border-primary/30 text-primary">
-                            1.75x Multiplier
+                            {formatAddonPrice(getSizePrice("A2"))}
                           </Badge>
                         </div>
 
@@ -1213,7 +1250,7 @@ export default function ArtSubscription() {
                           </Label>
                           <p className="text-muted-foreground mt-2 leading-relaxed">59.4 × 84.1 cm</p>
                           <Badge variant="outline" className="mt-4 w-fit border-primary/30 text-primary">
-                            2.6x Multiplier
+                            {formatAddonPrice(getSizePrice("A1"))}
                           </Badge>
                         </div>
 
@@ -1226,7 +1263,7 @@ export default function ArtSubscription() {
                           </Label>
                           <p className="text-muted-foreground mt-2 leading-relaxed">84.1 × 118.9 cm</p>
                           <Badge variant="outline" className="mt-4 w-fit border-primary/30 text-primary">
-                            4.0x Multiplier
+                            {formatAddonPrice(getSizePrice("A0"))}
                           </Badge>
                         </div>
                       </RadioGroup>
@@ -1940,13 +1977,15 @@ export default function ArtSubscription() {
               </CollapsibleContent>
             </Collapsible>
 
-            <div className="hidden md:block text-sm text-muted-foreground">Step {currentStep} of 6</div>
+            <div className="hidden md:block text-sm text-muted-foreground">
+              Step {currentStep + 1} of {totalSteps}
+            </div>
           </div>
 
           <div className="w-full bg-gray-200 h-2 rounded-full mt-4">
             <div
               className="bg-primary h-2 rounded-full transition-all duration-300"
-              style={{ width: `${(currentStep / 6) * 100}%` }}
+              style={{ width: `${((currentStep + 1) / totalSteps) * 100}%` }}
             ></div>
           </div>
 
