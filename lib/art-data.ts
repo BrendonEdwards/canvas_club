@@ -1,162 +1,301 @@
-import { ArtStyle } from "./types"
+// Single source of truth for styles, sub-styles, imagery and attribution.
+// Images live in public/art/ (downloaded by scripts/fetch-art.mjs).
+// Historical works are public domain (artist died >70 years ago); photographic
+// imagery is Unsplash-licensed. Partner-overview rule: every work carries
+// artist/title/source attribution.
+
+export interface ArtImage {
+  src: string
+  artist: string
+  title: string
+  source: "Wikimedia Commons" | "Unsplash"
+  license: "Public domain" | "Unsplash Licence"
+}
+
+export interface SubStyle {
+  id: string
+  name: string
+  image: ArtImage
+}
+
+export interface StyleTaxonomy {
+  visualTags: string[]
+  colourTraits: string[]
+  motifs: string[]
+  eraMedium: string[]
+}
+
+export interface ArtStyle {
+  id: string
+  name: string
+  description: string
+  image: ArtImage
+  taxonomy: StyleTaxonomy
+  subStyles: SubStyle[]
+}
+
+const pd = (id: string, artist: string, title: string): ArtImage => ({
+  src: `/art/${id}.jpg`,
+  artist,
+  title,
+  source: "Wikimedia Commons",
+  license: "Public domain",
+})
+
+const photo = (id: string, title: string): ArtImage => ({
+  src: `/art/${id}.jpg`,
+  artist: "Unsplash contributor",
+  title,
+  source: "Unsplash",
+  license: "Unsplash Licence",
+})
 
 export const ART_STYLES: ArtStyle[] = [
   {
     id: "abstract",
     name: "Abstract",
-    image: "https://m.media-amazon.com/images/I/51DjA2n+QYL._UXNaN_FMjpg_QL85_.jpg",
+    description: "Colour, form and gesture free from literal representation.",
+    image: pd("abstract", "Wassily Kandinsky", "Composition VII (1913)"),
+    taxonomy: {
+      visualTags: ["non-representational", "bold gesture", "layered composition"],
+      colourTraits: ["saturated", "high contrast", "chromatic play"],
+      motifs: ["colour blocks", "dynamic movement", "inner states"],
+      eraMedium: ["20th century", "oil on canvas", "acrylic"],
+    },
     subStyles: [
-      { id: "geometric", name: "Geometric", image: "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=300&h=300&fit=crop" },
-      { id: "expressionism", name: "Abstract Expressionism", image: "https://images.unsplash.com/photo-1541963463532-d68292c34b19?w=300&h=300&fit=crop" },
-      { id: "color-field", name: "Color Field", image: "https://images.unsplash.com/photo-1504198458649-3128b932f49e?w=300&h=300&fit=crop" },
-      { id: "minimalist-abstract", name: "Minimalist Abstract", image: "https://images.unsplash.com/photo-1507643179173-617d6c11813e?w=300&h=300&fit=crop" },
-      { id: "fluid", name: "Fluid Art", image: "https://images.unsplash.com/photo-1515405295579-ba7b45490615?w=300&h=300&fit=crop" },
-      { id: "cubist-abstract", name: "Cubist Abstract", image: "https://images.unsplash.com/photo-1555431189-0fabf2667795?w=300&h=300&fit=crop" }
-    ]
+      { id: "geometric", name: "Geometric", image: pd("geometric", "Piet Mondrian", "Composition II in Red, Blue, and Yellow (1930)") },
+      { id: "expressive-abstract", name: "Expressive Abstraction", image: pd("expressive-abstract", "Wassily Kandinsky", "Composition 8 (1923)") },
+      { id: "colour-field", name: "Colour Field", image: pd("colour-field", "Hilma af Klint", "The Swan, No. 17 (1915)") },
+      { id: "fluid", name: "Fluid Art", image: photo("fluid", "Marbled paint pour") },
+    ],
   },
   {
     id: "impressionist",
     name: "Impressionist",
-    image: "https://galeriemontblanc.com/cdn/shop/files/Vue_avion_1.jpg?v=1731889683",
+    description: "Light-drenched scenes caught in loose, visible brushwork.",
+    image: pd("impressionist", "Claude Monet", "Impression, Sunrise (1872)"),
+    taxonomy: {
+      visualTags: ["soft brushwork", "diffused light", "atmospheric"],
+      colourTraits: ["pastel", "sunlit", "high chroma"],
+      motifs: ["landscapes", "water scenes", "urban leisure"],
+      eraMedium: ["19th century", "oil on canvas", "plein air"],
+    },
     subStyles: [
-      { id: "neo-impressionism", name: "Neo-Impressionism", image: "https://images.unsplash.com/photo-1578301978018-3005759f48f7?w=300&h=300&fit=crop" },
-      { id: "post-impressionism", name: "Post-Impressionism", image: "https://images.unsplash.com/photo-1577720580479-7d839d829c73?w=300&h=300&fit=crop" },
-      { id: "luminism", name: "Luminism", image: "https://images.unsplash.com/photo-1464660439080-b79116909ce7?w=300&h=300&fit=crop" },
-      { id: "modern-impressionism", name: "Modern Impressionism", image: "https://images.unsplash.com/photo-1605806616949-1e87b487bc2a?w=300&h=300&fit=crop" }
-    ]
+      { id: "post-impressionism", name: "Post-Impressionism", image: pd("post-impressionism", "Vincent van Gogh", "The Starry Night (1889)") },
+      { id: "pointillism", name: "Pointillism", image: pd("pointillism", "Georges Seurat", "A Sunday on La Grande Jatte (1884)") },
+      { id: "plein-air", name: "Plein Air", image: pd("plein-air", "Claude Monet", "Woman with a Parasol (1875)") },
+      { id: "modern-impressionism", name: "Modern Impressionism", image: photo("modern-impressionism", "Contemporary impressionistic scene") },
+    ],
   },
   {
     id: "landscape",
     name: "Landscape",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Themistokles_von_Eckenbrecher_Utsikt_over_L%C3%A6rdals%C3%B8ren.jpeg/1200px-Themistokles_von_Eckenbrecher_Utsikt_over_L%C3%A6rdals%C3%B8ren.jpeg",
+    description: "The natural and built world, from pastoral calm to dramatic vistas.",
+    image: pd("landscape", "John Constable", "The Hay Wain (1821)"),
+    taxonomy: {
+      visualTags: ["horizon lines", "depth of field", "natural light"],
+      colourTraits: ["earth tones", "verdant greens", "sky blues"],
+      motifs: ["countryside", "coasts", "mountains"],
+      eraMedium: ["19th century", "oil on canvas", "photography"],
+    },
     subStyles: [
-      { id: "pastoral", name: "Pastoral", image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=300&h=300&fit=crop" },
-      { id: "sublime", name: "Romantic / Sublime", image: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=300&h=300&fit=crop" },
-      { id: "urban-landscape", name: "Urban Landscape", image: "https://images.unsplash.com/photo-1449824913929-2b3a3e3620c1?w=300&h=300&fit=crop" },
-      { id: "seascape", name: "Seascape", image: "https://images.unsplash.com/photo-1505118380757-91f5f5632de0?w=300&h=300&fit=crop" },
-      { id: "mountain", name: "Mountainscapes", image: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=300&h=300&fit=crop" },
-      { id: "forest", name: "Forest Scenes", image: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=300&h=300&fit=crop" }
-    ]
+      { id: "pastoral", name: "Pastoral", image: pd("pastoral", "Themistokles von Eckenbrecher", "View of Lærdalsøren (1901)") },
+      { id: "seascape", name: "Seascape", image: pd("seascape", "Katsushika Hokusai", "The Great Wave off Kanagawa (c.1831)") },
+      { id: "mountain", name: "Mountainscapes", image: photo("mountain", "Alpine mountain range") },
+      { id: "forest", name: "Forest Scenes", image: photo("forest", "Sunlit forest path") },
+      { id: "urban-landscape", name: "Urban Landscape", image: pd("urban-landscape", "Gustave Caillebotte", "Paris Street; Rainy Day (1877)") },
+    ],
   },
   {
     id: "portrait",
     name: "Portrait",
-    image: "https://media.meer.com/attachments/823e3abf8cd5ca97690888cf8e21b3ee0e7ef2a1/store/fill/860/645/67568b9166ef3f4eef54cc259f1951f7a178342cdfaa41fbfad508cff067/Girl-with-a-Pearl-Earring-is-an-oil-painting-by-Dutch-Golden-Age-painter-Johannes-Vermeer-dated.jpg",
+    description: "The human face and figure, from classical poise to modern candour.",
+    image: pd("portrait", "Johannes Vermeer", "Girl with a Pearl Earring (c.1665)"),
+    taxonomy: {
+      visualTags: ["figurative", "expressive gaze", "considered lighting"],
+      colourTraits: ["skin tones", "chiaroscuro", "muted grounds"],
+      motifs: ["identity", "character studies", "the gaze"],
+      eraMedium: ["17th–20th century", "oil on canvas", "photography"],
+    },
     subStyles: [
-      { id: "classical-portrait", name: "Classical", image: "https://images.unsplash.com/photo-1579965342575-16428a7c8881?w=300&h=300&fit=crop" },
-      { id: "contemporary-portrait", name: "Contemporary", image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=300&h=300&fit=crop" },
-      { id: "surreal-portrait", name: "Surreal", image: "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=300&h=300&fit=crop" },
-      { id: "pop-portrait", name: "Pop Art Style", image: "https://images.unsplash.com/photo-1550935114-99de2f488f47?w=300&h=300&fit=crop" }
-    ]
+      { id: "classical-portrait", name: "Classical", image: pd("classical-portrait", "Leonardo da Vinci", "Mona Lisa (c.1503)") },
+      { id: "expressive-portrait", name: "Expressive", image: pd("expressive-portrait", "Vincent van Gogh", "Self-Portrait (1889)") },
+      { id: "contemporary-portrait", name: "Contemporary", image: photo("contemporary-portrait", "Contemporary portrait in neon light") },
+      { id: "figurative", name: "Figurative Scenes", image: pd("figurative", "Edgar Degas", "The Ballet Class (c.1874)") },
+    ],
   },
   {
     id: "minimalist",
     name: "Minimalist",
-    image: "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQYslGqXLPDTbM7Y4Dy7qJRXC8CPa_0dAUClKNeM39h9OiLrmG6",
+    description: "Restraint, negative space and quiet tonal harmony.",
+    image: pd("minimalist", "James McNeill Whistler", "Nocturne: Blue and Silver — Chelsea (1871)"),
+    taxonomy: {
+      visualTags: ["negative space", "clean lines", "reduction"],
+      colourTraits: ["neutral palette", "tonal", "low contrast"],
+      motifs: ["stillness", "simple forms", "calm interiors"],
+      eraMedium: ["19th–21st century", "mixed media", "photography"],
+    },
     subStyles: [
-      { id: "line-art", name: "Line Art", image: "https://images.unsplash.com/photo-1536924940846-227afb31e2a5?w=300&h=300&fit=crop" },
-      { id: "monochrome", name: "Monochrome", image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=300&h=300&fit=crop" },
-      { id: "bauhaus", name: "Bauhaus Inspired", image: "https://images.unsplash.com/photo-1582201382894-6b281c3c2573?w=300&h=300&fit=crop" },
-      { id: "scandinavian", name: "Scandinavian", image: "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=300&h=300&fit=crop" }
-    ]
+      { id: "line-art", name: "Line Art", image: photo("line-art", "Minimal single-line drawing") },
+      { id: "monochrome", name: "Monochrome", image: photo("monochrome", "Calm monochrome seascape") },
+      { id: "scandinavian", name: "Scandinavian", image: photo("scandinavian", "Scandinavian interior still life") },
+      { id: "geometric-minimal", name: "Geometric Minimal", image: photo("geometric-minimal", "Minimal geometric architecture") },
+    ],
   },
   {
     id: "surrealism",
     name: "Surrealism",
-    image: "https://jimmoir.com/wp-content/uploads/2024/12/Batman-Ironing.jpg",
+    description: "Dream logic — familiar things in impossible arrangements.",
+    image: pd("surrealism", "Henri Rousseau", "The Dream (1910)"),
+    taxonomy: {
+      visualTags: ["dreamlike", "juxtaposition", "uncanny"],
+      colourTraits: ["lush", "theatrical light", "deep shadows"],
+      motifs: ["dreams", "jungles", "the subconscious"],
+      eraMedium: ["early 20th century", "oil on canvas", "photography"],
+    },
     subStyles: [
-      { id: "dreamscapes", name: "Dreamscapes", image: "https://images.unsplash.com/photo-1563089145-599997674d42?w=300&h=300&fit=crop" },
-      { id: "automatism", name: "Automatism", image: "https://images.unsplash.com/photo-1533158307587-828f0a76ef93?w=300&h=300&fit=crop" },
-      { id: "veristic", name: "Veristic Surrealism", image: "https://images.unsplash.com/photo-1544365558-35aa4afcf11f?w=300&h=300&fit=crop" }
-    ]
+      { id: "dreamscapes", name: "Dreamscapes", image: pd("dreamscapes", "Henri Rousseau", "Jungle scene") },
+      { id: "symbolism", name: "Symbolism", image: pd("symbolism", "Odilon Redon", "The Cyclops (c.1914)") },
+      { id: "surreal-photography", name: "Surreal Photography", image: photo("surreal-photography", "Surreal staged photograph") },
+    ],
   },
   {
     id: "pop-art",
     name: "Pop Art",
-    image: "https://i.pinimg.com/originals/28/d8/9a/28d89a1a0e13f6912bbcdcf3659520b8.jpg",
+    description: "Bold, graphic and playful — art borrowed from popular culture.",
+    image: photo("pop-art", "Pop-style colour portrait"),
+    taxonomy: {
+      visualTags: ["bold outlines", "graphic", "playful"],
+      colourTraits: ["primary colours", "high saturation", "flat colour"],
+      motifs: ["popular culture", "advertising", "icons"],
+      eraMedium: ["20th–21st century", "screen print", "digital"],
+    },
     subStyles: [
-      { id: "comic-strip", name: "Comic Strip Style", image: "https://images.unsplash.com/photo-1614730341194-75c60740a2d3?w=300&h=300&fit=crop" },
-      { id: "advertising", name: "Advertising Aesthetic", image: "https://images.unsplash.com/photo-1620503299767-f5da77215c2d?w=300&h=300&fit=crop" },
-      { id: "collage-pop", name: "Collage", image: "https://images.unsplash.com/photo-1579783901586-d88db74b4fe4?w=300&h=300&fit=crop" }
-    ]
+      { id: "comic-strip", name: "Comic Strip Style", image: photo("comic-strip", "Comic-style graphic wall") },
+      { id: "advertising", name: "Advertising Aesthetic", image: photo("advertising", "Retro advertising signage") },
+      { id: "collage-pop", name: "Collage", image: photo("collage-pop", "Layered paper collage") },
+    ],
   },
   {
     id: "cubism",
     name: "Cubism",
-    image: "https://upload.wikimedia.org/wikipedia/en/thumb/8/8b/Pablo_Picasso,_1909,_Brick_Factory_at_Tortosa,_oil_on_canvas,_50.7_x_60.2_cm,_The_State_Hermitage_Museum,_Saint_Petersburg.jpg/330px-Pablo_Picasso,_1909,_Brick_Factory_at_Tortosa,_oil_on_canvas,_50.7_x_60.2_cm,_The_State_Hermitage_Museum,_Saint_Petersburg.jpg",
+    description: "Subjects fractured into planes and reassembled from every angle.",
+    image: pd("cubism", "Juan Gris", "Portrait of Pablo Picasso (1912)"),
+    taxonomy: {
+      visualTags: ["fragmented planes", "multiple viewpoints", "faceted"],
+      colourTraits: ["muted earth tones", "grey-browns", "structured contrast"],
+      motifs: ["still life", "portraits", "instruments"],
+      eraMedium: ["early 20th century", "oil on canvas"],
+    },
     subStyles: [
-      { id: "analytical", name: "Analytical Cubism", image: "https://images.unsplash.com/photo-1549887534-1541e9326642?w=300&h=300&fit=crop" },
-      { id: "synthetic", name: "Synthetic Cubism", image: "https://images.unsplash.com/photo-1561214115-f2f134cc4912?w=300&h=300&fit=crop" }
-    ]
+      { id: "analytical-cubism", name: "Analytical Cubism", image: pd("analytical-cubism", "Robert Delaunay", "La ville no. 2 (1910)") },
+      { id: "synthetic-cubism", name: "Synthetic Cubism", image: pd("synthetic-cubism", "Juan Gris", "Still Life with Checked Tablecloth (1915)") },
+    ],
   },
   {
-    id: "watercolor",
-    name: "Watercolor",
-    image: "https://artsdot.com/ADC/Art.nsf/O/8XYCCS/$File/John-Singer-Sargent-White-Ships.JPG",
+    id: "watercolour",
+    name: "Watercolour",
+    description: "Translucent washes and delicate, luminous colour.",
+    image: pd("watercolour", "Winslow Homer", "The Blue Boat (1892)"),
+    taxonomy: {
+      visualTags: ["translucent washes", "soft edges", "luminous"],
+      colourTraits: ["delicate", "watery blues", "paper white"],
+      motifs: ["boats", "botanicals", "travel sketches"],
+      eraMedium: ["19th–21st century", "watercolour on paper"],
+    },
     subStyles: [
-      { id: "botanical", name: "Botanical", image: "https://images.unsplash.com/photo-1463936575829-25148e1db1b8?w=300&h=300&fit=crop" },
-      { id: "wet-on-wet", name: "Wet-on-Wet Abstract", image: "https://images.unsplash.com/photo-1581850380310-09a5676cb4c9?w=300&h=300&fit=crop" },
-      { id: "landscape-wash", name: "Landscape Wash", image: "https://images.unsplash.com/photo-1627986064115-46b7a2d69e4d?w=300&h=300&fit=crop" }
-    ]
-  },
-  {
-    id: "still-life",
-    name: "Still Life",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Memling,_Hans_%E2%80%94_Flowers_in_a_Jug_(reverse).jpg/250px-Memling,_Hans_%E2%80%94_Flowers_in_a_Jug_(reverse).jpg",
-    subStyles: [
-      { id: "floral", name: "Floral", image: "https://images.unsplash.com/photo-1490750967868-58cb75069fa6?w=300&h=300&fit=crop" },
-      { id: "vanitas", name: "Vanitas", image: "https://images.unsplash.com/photo-1569300551082-843d43e58988?w=300&h=300&fit=crop" },
-      { id: "modern-still-life", name: "Modern Object", image: "https://images.unsplash.com/photo-1582201968431-b05c862d2d93?w=300&h=300&fit=crop" }
-    ]
-  },
-  {
-    id: "urban",
-    name: "Urban",
-    image: "https://i0.wp.com/manchesterbe.es/wp-content/uploads/2019/08/1111.jpg?resize=1024,683",
-    subStyles: [
-      { id: "street-art", name: "Street Art / Graffiti", image: "https://images.unsplash.com/photo-1499781350541-7783f6c6a0c8?w=300&h=300&fit=crop" },
-      { id: "architecture", name: "Architecture", image: "https://images.unsplash.com/photo-1486718448742-163732cd1544?w=300&h=300&fit=crop" },
-      { id: "industrial", name: "Industrial", image: "https://images.unsplash.com/photo-1504918237279-34dc309115de?w=300&h=300&fit=crop" }
-    ]
-  },
-  {
-    id: "nature",
-    name: "Nature",
-    image: "https://th-thumbnailer.cdn-si-edu.com/BNUNX1xJuq93KATbeIuAt2aXOYM=/1026x684/https://tf-cmsv2-smithsonianmag-media.s3.amazonaws.com/filer/25MikeReyfman_Waterfall.jpg",
-    subStyles: [
-      { id: "wildlife", name: "Wildlife", image: "https://images.unsplash.com/photo-1474511320723-9a56873867b5?w=300&h=300&fit=crop" },
-      { id: "botanical-illustration", name: "Botanical Illustration", image: "https://images.unsplash.com/photo-1507747806126-1d1257125345?w=300&h=300&fit=crop" },
-      { id: "macro", name: "Macro Nature", image: "https://images.unsplash.com/photo-1463123081488-789f998ac9c4?w=300&h=300&fit=crop" }
-    ]
+      { id: "loose-wash", name: "Loose Wash", image: pd("loose-wash", "John Singer Sargent", "Venice (c.1902)") },
+      { id: "botanical-watercolour", name: "Botanical", image: photo("botanical-watercolour", "Botanical flower study") },
+      { id: "urban-sketch", name: "Urban Sketching", image: photo("urban-sketch", "City sketching scene") },
+    ],
   },
   {
     id: "black-white",
     name: "Black & White",
-    image: "https://cyclingindependent.com/wp-content/uploads/2022/11/RUR-Shape-4-750x430.jpg",
+    description: "Monochrome photography — light, shadow and story.",
+    image: photo("black-white", "High-contrast monochrome scene"),
+    taxonomy: {
+      visualTags: ["monochrome", "high contrast", "strong composition"],
+      colourTraits: ["black and white", "grey tonal range"],
+      motifs: ["street life", "architecture", "human stories"],
+      eraMedium: ["20th–21st century", "film", "digital photography"],
+    },
     subStyles: [
-      { id: "photography-bw", name: "B&W Photography", image: "https://images.unsplash.com/photo-1465922338908-6205791a84c9?w=300&h=300&fit=crop" },
-      { id: "charcoal", name: "Charcoal / Sketch", image: "https://images.unsplash.com/photo-1582201968884-297eb06b5283?w=300&h=300&fit=crop" },
-      { id: "ink", name: "Ink Wash", image: "https://images.unsplash.com/photo-1627986064115-46b7a2d69e4d?w=300&h=300&fit=crop" }
-    ]
+      { id: "documentary", name: "Documentary", image: photo("documentary", "Candid street documentary") },
+      { id: "architectural-bw", name: "Architectural", image: photo("architectural-bw", "Brutalist architecture study") },
+      { id: "fine-art-bw", name: "Fine Art", image: photo("fine-art-bw", "Fine-art monochrome landscape") },
+    ],
   },
   {
-    id: "contemporary",
-    name: "Contemporary",
-    image: "https://redtreetimes.com/wp-content/uploads/2016/10/yayoi-kusama-all-the-eternal-love-i-have-for-the-pumpkins-2016.jpg?w=768",
+    id: "urban",
+    name: "Urban",
+    description: "The energy of the city — streets, skylines and neon.",
+    image: photo("urban", "City skyline at dusk"),
+    taxonomy: {
+      visualTags: ["cityscape", "geometry of streets", "human bustle"],
+      colourTraits: ["neon accents", "concrete greys", "night blues"],
+      motifs: ["skylines", "street corners", "city nights"],
+      eraMedium: ["19th–21st century", "oil on canvas", "photography"],
+    },
     subStyles: [
-      { id: "conceptual", name: "Conceptual", image: "https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=300&h=300&fit=crop" },
-      { id: "mixed-media", name: "Mixed Media", image: "https://images.unsplash.com/photo-1547891654-e66ed7ebb968?w=300&h=300&fit=crop" },
-      { id: "installation-photo", name: "Installation Photography", image: "https://images.unsplash.com/photo-1492370284958-c20b15c692d2?w=300&h=300&fit=crop" }
-    ]
+      { id: "cityscape", name: "Cityscape", image: pd("cityscape", "Camille Pissarro", "Boulevard Montmartre (1897)") },
+      { id: "night-city", name: "Night City", image: photo("night-city", "Neon-lit night street") },
+    ],
+  },
+  {
+    id: "nature",
+    name: "Nature",
+    description: "Flora, fauna and wild places in intimate detail.",
+    image: photo("nature", "Sunlight through forest canopy"),
+    taxonomy: {
+      visualTags: ["organic forms", "natural detail", "seasonal light"],
+      colourTraits: ["verdant", "earthy", "botanical greens"],
+      motifs: ["plants", "wildlife", "coastlines"],
+      eraMedium: ["19th–21st century", "photography", "illustration"],
+    },
+    subStyles: [
+      { id: "botanical", name: "Botanical", image: photo("botanical", "Botanical close-up") },
+      { id: "wildlife", name: "Wildlife", image: photo("wildlife", "Wildlife portrait") },
+      { id: "coastal-nature", name: "Coastal", image: photo("coastal-nature", "Quiet coastal shoreline") },
+    ],
   },
   {
     id: "digital-art",
     name: "Digital Art",
-    image: "https://cdn.inprnt.com/thumbs/11/b8/11b8120923b29073a19d2d8564228b3a.jpg",
+    description: "Born on screen — renders, glitches and layered digital worlds.",
+    image: photo("digital-art", "Abstract digital artwork"),
+    taxonomy: {
+      visualTags: ["synthetic", "layered textures", "screen-native"],
+      colourTraits: ["vibrant", "duotone", "neon gradients"],
+      motifs: ["technology", "future worlds", "glitch aesthetics"],
+      eraMedium: ["21st century", "digital"],
+    },
     subStyles: [
-      { id: "3d-render", name: "3D Rendering", image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=300&h=300&fit=crop" },
-      { id: "pixel-art", name: "Pixel Art", image: "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=300&h=300&fit=crop" },
-      { id: "vector", name: "Vector Illustration", image: "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=300&h=300&fit=crop" }
-    ]
-  }
+      { id: "glitch", name: "Glitch", image: photo("glitch", "Glitch light abstraction") },
+      { id: "render-3d", name: "3D Render", image: photo("render-3d", "Stylised 3D render") },
+      { id: "digital-collage", name: "Digital Collage", image: photo("digital-collage", "Layered digital collage") },
+    ],
+  },
 ]
+
+// Deck used by the wizard's rating step: one representative work per style,
+// keyed by style id so ratings map directly onto taste data.
+export const RATING_DECK: { id: string; styleId: string; styleName: string; image: ArtImage }[] =
+  ART_STYLES.map((style) => ({
+    id: style.id,
+    styleId: style.id,
+    styleName: style.name,
+    image: style.image,
+  }))
+
+export function findStyle(id: string): ArtStyle | null {
+  return ART_STYLES.find((s) => s.id === id) ?? null
+}
+
+export function findSubStyle(id: string): { style: ArtStyle; sub: SubStyle } | null {
+  for (const style of ART_STYLES) {
+    const sub = style.subStyles.find((s) => s.id === id)
+    if (sub) return { style, sub }
+  }
+  return null
+}
