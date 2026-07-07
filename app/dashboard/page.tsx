@@ -27,9 +27,8 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
 export default function DashboardPage() {
   const router = useRouter()
-  const { user, logout } = useAuth()
+  const { user, loading, logout } = useAuth()
   const [userData, setUserData] = useState<any>(null)
-  const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState("overview")
 
   // State for preferences editing
@@ -38,35 +37,22 @@ export default function DashboardPage() {
   const [saveStatus, setSaveStatus] = useState("")
 
   useEffect(() => {
+    if (loading) return
     if (!user) {
       router.push("/login")
       return
     }
-
-    // Fetch user data
-    fetch(`/api/user/${user}`)
-      .then(res => {
-        if (!res.ok) throw new Error("Failed to fetch")
-        return res.json()
-      })
-      .then(data => {
-        setUserData(data)
-        setEditedPreferences({
-            mainStyles: data.preferences?.mainStyles || [],
-            subStyles: data.preferences?.subStyles || []
-        })
-        setLoading(false)
-      })
-      .catch(() => {
-        setLoading(false)
-        // router.push("/login")
-      })
-  }, [user, router])
+    setUserData(user)
+    setEditedPreferences({
+      mainStyles: user.preferences?.mainStyles || [],
+      subStyles: user.preferences?.subStyles || [],
+    })
+  }, [user, loading, router])
 
   const handleSavePreferences = async () => {
     setSaveStatus("saving")
     try {
-        const res = await fetch(`/api/user/${user}/preferences`, {
+        const res = await fetch(`/api/user/me/preferences`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -80,14 +66,8 @@ export default function DashboardPage() {
 
         if (res.ok) {
             setSaveStatus("success")
-            setUserData({
-                ...userData,
-                preferences: {
-                    ...userData.preferences,
-                    mainStyles: editedPreferences.mainStyles,
-                    subStyles: editedPreferences.subStyles
-                }
-            })
+            const updated = await res.json()
+            setUserData(updated)
             setTimeout(() => {
                 setSaveStatus("")
                 setIsEditingPreferences(false)
@@ -110,7 +90,15 @@ export default function DashboardPage() {
           <h1 className="text-2xl font-serif font-bold text-primary">Canvas Club</h1>
           <div className="flex items-center gap-4">
              <span className="text-sm font-medium hidden md:inline">Welcome, {userData.name}</span>
-             <Button variant="ghost" size="icon" onClick={() => logout()}>
+             <Button
+               variant="ghost"
+               size="icon"
+               aria-label="Log out"
+               onClick={async () => {
+                 await logout()
+                 router.push("/")
+               }}
+             >
                <LogOut className="h-5 w-5" />
              </Button>
           </div>

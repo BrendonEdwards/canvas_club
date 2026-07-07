@@ -7,13 +7,14 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
 import { useAuth } from "@/hooks/use-auth"
-import { Loader2 } from "lucide-react"
+import { Eye, EyeOff, Loader2 } from "lucide-react"
 
 export default function LoginPage() {
   const router = useRouter()
   const { login } = useAuth()
   const [formData, setFormData] = useState({ email: "", password: "" })
   const [error, setError] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,26 +28,12 @@ export default function LoginPage() {
       setError("Please enter your email and password.")
       return
     }
-
     setLoading(true)
-    try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      })
-
-      if (res.ok) {
-        const user = await res.json()
-        login(user.email)
-        router.push("/dashboard")
-      } else {
-        const data = await res.json()
-        setError(data.error || "Invalid credentials")
-        setLoading(false)
-      }
-    } catch (err) {
-      setError("Something went wrong. Please try again.")
+    const result = await login(formData.email, formData.password)
+    if (result.ok) {
+      router.push("/dashboard")
+    } else {
+      setError(result.error)
       setLoading(false)
     }
   }
@@ -65,29 +52,51 @@ export default function LoginPage() {
               id="email"
               name="email"
               type="email"
+              autoComplete="email"
               value={formData.email}
               onChange={handleChange}
-              placeholder="name@example.com"
             />
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              name="password"
-              type="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="••••••••"
-            />
+            <div className="relative">
+              <Input
+                id="password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                autoComplete="current-password"
+                value={formData.password}
+                onChange={handleChange}
+                className="pr-10"
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="absolute right-2 top-1/2 h-8 w-8 -translate-y-1/2 text-muted-foreground hover:text-primary"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </Button>
+            </div>
           </div>
-          {error && <p className="text-sm text-destructive font-medium">{error}</p>}
+          {error && <p className="text-sm text-destructive">{error}</p>}
         </div>
         <Button type="submit" className="w-full" disabled={loading}>
-          {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Login"}
+          {loading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Signing in...
+            </>
+          ) : (
+            "Login"
+          )}
         </Button>
-        <p className="text-center text-sm text-muted-foreground">
-          New here? <Link href="/" className="underline text-primary">Start your subscription</Link>
+        <p className="text-center text-sm">
+          New here?{" "}
+          <Link href="/" className="underline">
+            Start your subscription
+          </Link>
         </p>
       </form>
     </main>
