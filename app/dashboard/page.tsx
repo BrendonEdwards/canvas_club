@@ -163,7 +163,9 @@ function DashboardContent() {
                     </div>
                     <CardContent className="p-4">
                       <h3 className="font-serif text-lg font-medium leading-tight">{rec.title}</h3>
-                      <p className="text-sm text-muted-foreground">{rec.artist}</p>
+                      {rec.image.source !== "Unsplash" && (
+                        <p className="text-sm text-muted-foreground">{rec.artist}</p>
+                      )}
                       <div className="flex gap-2 mt-2">
                         <Badge variant="outline" className="border-primary/30 text-primary text-xs">
                           {rec.styleName}
@@ -365,9 +367,14 @@ function DashboardContent() {
                     </CardHeader>
                     <CardContent className="space-y-2">
                       {Object.entries(userData.preferences.ratings).map(([id, rating]) => (
-                        <div key={id} className="flex justify-between items-center text-sm">
+                        <div key={id} className="flex justify-between items-center text-sm py-0.5">
                           <span>{styleName(id)}</span>
-                          <span>{rating === "love" ? "❤️ Love" : rating === "like" ? "👍 Like" : "👎 Dislike"}</span>
+                          <span className="inline-flex items-center gap-1.5">
+                            <span>{rating === "love" ? "❤️" : rating === "like" ? "👍" : "👎"}</span>
+                            <span className="text-muted-foreground">
+                              {rating === "love" ? "Love" : rating === "like" ? "Like" : "Dislike"}
+                            </span>
+                          </span>
                         </div>
                       ))}
                       {Object.keys(userData.preferences.ratings).length === 0 && (

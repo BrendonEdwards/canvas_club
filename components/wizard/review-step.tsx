@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { CheckCircle } from "lucide-react"
-import { findStyle, findSubStyle, ART_STYLES } from "@/lib/art-data"
+import { ART_STYLES, displayCredit, findStyle, findSubStyle } from "@/lib/art-data"
 import { formatGBP, MULTIPLIERS } from "@/lib/pricing"
 import type { WizardState } from "./use-wizard-state"
 
@@ -50,9 +50,7 @@ export function ReviewStep({ wizard }: { wizard: WizardState }) {
                   className="object-cover"
                 />
               </div>
-              <figcaption className="text-[11px] text-muted-foreground">
-                {image.artist} · {image.title}
-              </figcaption>
+              <figcaption className="text-[11px] text-muted-foreground">{displayCredit(image)}</figcaption>
             </figure>
           ))}
         </div>

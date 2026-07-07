@@ -288,6 +288,12 @@ export const RATING_DECK: { id: string; styleId: string; styleName: string; imag
     image: style.image,
   }))
 
+// Customer-facing credit line: named artists get full attribution; licensed
+// stock photography is credited by source rather than a placeholder name.
+export function displayCredit(image: ArtImage): string {
+  return image.source === "Unsplash" ? image.title : `${image.artist} · ${image.title}`
+}
+
 export function findStyle(id: string): ArtStyle | null {
   return ART_STYLES.find((s) => s.id === id) ?? null
 }

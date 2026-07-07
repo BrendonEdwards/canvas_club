@@ -6,7 +6,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { CardDescription, CardTitle } from "@/components/ui/card"
 import { ArrowLeft, CheckCircle, Star } from "lucide-react"
-import { RATING_DECK } from "@/lib/art-data"
+import { displayCredit, RATING_DECK } from "@/lib/art-data"
 import type { Rating } from "@/lib/types"
 import type { WizardState } from "./use-wizard-state"
 
@@ -96,10 +96,8 @@ export function RatingsStep({ wizard }: { wizard: WizardState }) {
                   />
                 </div>
                 <div className="p-6 space-y-1 text-center">
-                  <h3 className="font-serif text-xl font-medium">{current.image.title}</h3>
-                  <p className="text-muted-foreground">
-                    {current.image.artist} · {current.styleName}
-                  </p>
+                  <h3 className="font-serif text-xl font-medium">{current.styleName}</h3>
+                  <p className="text-muted-foreground">{displayCredit(current.image)}</p>
                 </div>
               </div>
             </div>

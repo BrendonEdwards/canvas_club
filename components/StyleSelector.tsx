@@ -13,7 +13,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Check, Minus, Plus, Sparkles } from "lucide-react"
-import { ART_STYLES, findSubStyle, type ArtImage } from "@/lib/art-data"
+import { ART_STYLES, displayCredit, findSubStyle, type ArtImage } from "@/lib/art-data"
 
 interface StyleSelectorProps {
   selectedStyles: string[] // style ids
@@ -25,7 +25,7 @@ interface StyleSelectorProps {
 function Attribution({ image, className = "" }: { image: ArtImage; className?: string }) {
   return (
     <p className={`text-[11px] leading-snug text-muted-foreground ${className}`}>
-      {image.artist} · {image.title}
+      {displayCredit(image)}
     </p>
   )
 }
