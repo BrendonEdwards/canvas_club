@@ -22,7 +22,7 @@ import { IntroStep } from "@/components/wizard/intro-step"
 import { StylesStep } from "@/components/wizard/styles-step"
 import { RatingsStep } from "@/components/wizard/ratings-step"
 import { PlanStep } from "@/components/wizard/plan-step"
-import { CustomiseStep } from "@/components/wizard/customise-step"
+import { ExtrasStep } from "@/components/wizard/extras-step"
 import { ReviewStep } from "@/components/wizard/review-step"
 import { AccountStep } from "@/components/wizard/account-step"
 
@@ -89,8 +89,8 @@ export default function ArtSubscription() {
         return <RatingsStep wizard={wizard} />
       case "Plan":
         return <PlanStep wizard={wizard} />
-      case "Customise":
-        return <CustomiseStep wizard={wizard} />
+      case "Extras":
+        return <ExtrasStep wizard={wizard} />
       case "Review":
         return <ReviewStep wizard={wizard} />
       case "Account":

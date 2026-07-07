@@ -1,87 +1,50 @@
-// Pricing aligned to the Commercial Business Case (July 2026): consumer tiers
-// £15 / £30 / £50 with a £33 blended target; custom plans capped so the wizard
-// can never auto-quote warehouse-scale figures.
+// Pricing aligned to the UK Business Plan v3: customer prices are VAT-inclusive,
+// plans are flat monthly tiers (no per-option multipliers — galleries price
+// buy-to-keep works themselves), and the Frame Kit is a one-time add-on.
 
-export const PLAN_PRICES = {
-  Basic: 15,
-  Standard: 30,
-  Premium: 50,
-  CUSTOM_PER_PIECE: 15,
+export const VAT_RATE = 0.2
+
+export const PLANS = {
+  Basic: { monthly: 15, prints: 1 },
+  Standard: { monthly: 30, prints: 3 },
+  Premium: { monthly: 50, prints: 5 },
 } as const
 
-export const CUSTOM_MAX_PIECES = 10
-export const FRAME_MONTHLY_FEE = 12
-export const YEARLY_DISCOUNT = 0.15
+export type PlanName = keyof typeof PLANS
 
-export const MULTIPLIERS = {
-  artistTier: { Emerging: 1, "Mid-Career": 1.8, Established: 3.5 } as Record<string, number>,
-  artType: { Print: 1, "Limited Edition Print": 2.5, Original: 8 } as Record<string, number>,
-  size: { A4: 1, A3: 1.25, A2: 1.75, A1: 2.6, A0: 4.0 } as Record<string, number>,
+// One-time Frame Kit priced by the number of prints in the member's rotation.
+export const FRAME_KIT_PRICES: Record<number, number> = {
+  1: 35,
+  3: 79,
+  5: 119,
 }
 
 export interface PricingInput {
   subscriptionPlan: string
-  customPieces: number
-  artistTier: string
-  artType: string
-  size: string
-  frameCommitment: boolean
-  billingCycle: "monthly" | "yearly"
+  frameKit: boolean
 }
 
 export interface PriceBreakdown {
-  base: number
-  artistTier: number
-  artType: number
-  size: number
-  frame: number
-  discount: number
-  total: number
+  monthly: number // inc VAT
+  monthlyNet: number // ex VAT — what royalties are calculated on
+  frameKitOneOff: number // inc VAT, charged once at signup
+  prints: number
 }
 
-export function clampCustomPieces(pieces: number): number {
-  if (Number.isNaN(pieces)) return 1
-  return Math.min(Math.max(Math.round(pieces), 1), CUSTOM_MAX_PIECES)
-}
-
-function basePrice(input: PricingInput): number {
-  switch (input.subscriptionPlan) {
-    case "Basic":
-      return PLAN_PRICES.Basic
-    case "Standard":
-      return PLAN_PRICES.Standard
-    case "Premium":
-      return PLAN_PRICES.Premium
-    case "Custom":
-      return clampCustomPieces(input.customPieces) * PLAN_PRICES.CUSTOM_PER_PIECE
-    default:
-      return 0
-  }
+export function isPlan(name: string): name is PlanName {
+  return name in PLANS
 }
 
 export function calculatePrice(input: PricingInput): PriceBreakdown {
-  const base = basePrice(input)
-
-  const tierMult = MULTIPLIERS.artistTier[input.artistTier] ?? 1
-  const typeMult = MULTIPLIERS.artType[input.artType] ?? 1
-  const sizeMult = MULTIPLIERS.size[input.size] ?? 1
-
-  const artistTier = base * (tierMult - 1)
-  const artType = (base + artistTier) * (typeMult - 1)
-  const size = (base + artistTier + artType) * (sizeMult - 1)
-  const frame = input.frameCommitment ? FRAME_MONTHLY_FEE : 0
-
-  const subtotal = base + artistTier + artType + size + frame
-  const discount = input.billingCycle === "yearly" ? subtotal * YEARLY_DISCOUNT : 0
-
+  if (!isPlan(input.subscriptionPlan)) {
+    return { monthly: 0, monthlyNet: 0, frameKitOneOff: 0, prints: 0 }
+  }
+  const plan = PLANS[input.subscriptionPlan]
   return {
-    base,
-    artistTier,
-    artType,
-    size,
-    frame,
-    discount,
-    total: Math.max(Math.round(subtotal - discount), 0),
+    monthly: plan.monthly,
+    monthlyNet: plan.monthly / (1 + VAT_RATE),
+    frameKitOneOff: input.frameKit ? (FRAME_KIT_PRICES[plan.prints] ?? 0) : 0,
+    prints: plan.prints,
   }
 }
 

@@ -5,6 +5,7 @@ import { CardDescription, CardTitle } from "@/components/ui/card"
 import { Card, CardContent } from "@/components/ui/card"
 import { CheckCircle, Palette, RefreshCw, Users } from "lucide-react"
 import { findStyle } from "@/lib/art-data"
+import { GALLERY_HUBS } from "@/lib/galleries"
 
 const highlights = [
   {
@@ -102,6 +103,25 @@ export function IntroStep() {
             <p className="text-muted-foreground leading-relaxed">{body}</p>
           </div>
         ))}
+      </div>
+
+      <div className="rounded-lg border shadow-subtle p-8 mt-10">
+        <h3 className="text-2xl font-serif mb-2">Art from real galleries, not a print factory</h3>
+        <p className="text-muted-foreground leading-relaxed mb-6">
+          Every work in circulation is a gallery-held edition with a named artist, a story and a royalty —
+          artists and galleries are paid every quarter their work hangs on your wall.
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+          {GALLERY_HUBS.map((hub) => (
+            <div key={hub.id} className="p-4 rounded-lg bg-primary/5 border border-primary/20">
+              <p className="font-serif font-medium leading-tight">{hub.name}</p>
+              <p className="text-sm text-muted-foreground">{hub.location}</p>
+              <p className="text-xs text-muted-foreground mt-2">
+                {hub.status === "anchor" ? "Anchor partner" : "Joining at launch"}
+              </p>
+            </div>
+          ))}
+        </div>
       </div>
 
       <div className="bg-primary/5 rounded-lg p-8 border border-primary/20 shadow-subtle mt-10">

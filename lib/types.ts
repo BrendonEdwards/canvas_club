@@ -4,17 +4,14 @@ export interface Preferences {
   mainStyles: string[] // ids of top-level styles
   subStyles: string[] // ids of sub-styles
   ratings: Record<string, Rating> // artworkId -> rating
+  originalsInterest?: boolean // early-access interest in the Originals pipeline
 }
 
 export interface Subscription {
-  plan: string // Basic, Standard, Premium, Custom
-  customPieces?: number
-  artistTier: string
-  artType: string
-  size: string
-  frameCommitment: boolean
-  billingCycle: "monthly" | "yearly"
-  monthlyPrice: number
+  plan: string // Basic, Standard, Premium
+  sizePreference: string // A3, A2, or Mixed
+  frameKit: boolean // one-time Frame Kit purchased at signup
+  monthlyPrice: number // inc VAT
 }
 
 export interface User {

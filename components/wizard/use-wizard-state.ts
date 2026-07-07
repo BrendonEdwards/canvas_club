@@ -1,7 +1,7 @@
 "use client"
 
 import { useMemo, useState } from "react"
-import { calculatePrice, clampCustomPieces, type PriceBreakdown } from "@/lib/pricing"
+import { calculatePrice, type PriceBreakdown } from "@/lib/pricing"
 import { findSubStyle, RATING_DECK } from "@/lib/art-data"
 import type { Rating } from "@/lib/types"
 
@@ -10,12 +10,9 @@ export interface WizardForm {
   subStyles: string[]
   ratings: Record<string, Rating>
   subscriptionPlan: string
-  customPieces: number
-  artistTier: string
-  artType: string
-  size: string
-  frameCommitment: boolean
-  billingCycle: "monthly" | "yearly"
+  sizePreference: string
+  frameKit: boolean
+  originalsInterest: boolean
   email: string
   password: string
   confirmPassword: string
@@ -24,7 +21,7 @@ export interface WizardForm {
 
 export type WizardErrors = Partial<Record<string, string>>
 
-export const WIZARD_STEPS = ["Intro", "Styles", "Ratings", "Plan", "Customise", "Review", "Account"] as const
+export const WIZARD_STEPS = ["Intro", "Styles", "Ratings", "Plan", "Extras", "Review", "Account"] as const
 export const TOTAL_STEPS = WIZARD_STEPS.length
 
 const initialForm: WizardForm = {
@@ -32,12 +29,9 @@ const initialForm: WizardForm = {
   subStyles: [],
   ratings: {},
   subscriptionPlan: "",
-  customPieces: 1,
-  artistTier: "Emerging",
-  artType: "Print",
-  size: "A4",
-  frameCommitment: false,
-  billingCycle: "monthly",
+  sizePreference: "Mixed",
+  frameKit: false,
+  originalsInterest: false,
   email: "",
   password: "",
   confirmPassword: "",
@@ -59,10 +53,7 @@ export function useWizardState() {
     setErrors((prev) => (prev[field] ? { ...prev, [field]: undefined } : prev))
 
   const setField = <K extends keyof WizardForm>(field: K, value: WizardForm[K]) => {
-    setForm((prev) => ({
-      ...prev,
-      [field]: field === "customPieces" ? clampCustomPieces(value as number) : value,
-    }))
+    setForm((prev) => ({ ...prev, [field]: value }))
     clearError(field)
   }
 
@@ -119,7 +110,7 @@ export function useWizardState() {
         if (!ratingComplete) next.ratings = "Please rate every artwork so we can learn your taste"
         break
       case "Plan":
-        if (!form.subscriptionPlan) next.subscriptionPlan = "Please select a subscription plan"
+        if (!form.subscriptionPlan) next.subscriptionPlan = "Please select a membership plan"
         break
       case "Account":
         if (!form.email) next.email = "Please enter your email address"
@@ -143,16 +134,13 @@ export function useWizardState() {
       mainStyles: form.mainStyles,
       subStyles: form.subStyles,
       ratings: form.ratings,
+      originalsInterest: form.originalsInterest,
     },
     subscription: {
       plan: form.subscriptionPlan,
-      customPieces: form.subscriptionPlan === "Custom" ? form.customPieces : undefined,
-      artistTier: form.artistTier,
-      artType: form.artType,
-      size: form.size,
-      frameCommitment: form.frameCommitment,
-      billingCycle: form.billingCycle,
-      monthlyPrice: price.total,
+      sizePreference: form.sizePreference,
+      frameKit: form.frameKit,
+      monthlyPrice: price.monthly,
     },
   })
 

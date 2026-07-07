@@ -1,64 +1,35 @@
 import { describe, it, expect } from "vitest"
-import { calculatePrice, clampCustomPieces, CUSTOM_MAX_PIECES, PLAN_PRICES } from "@/lib/pricing"
+import { calculatePrice, FRAME_KIT_PRICES, PLANS, VAT_RATE } from "@/lib/pricing"
 
-const base = {
-  subscriptionPlan: "Basic",
-  customPieces: 1,
-  artistTier: "Emerging",
-  artType: "Print",
-  size: "A4",
-  frameCommitment: false,
-  billingCycle: "monthly" as const,
-}
-
-describe("calculatePrice", () => {
-  it("prices Basic monthly at the business-case £15", () => {
-    expect(PLAN_PRICES.Basic).toBe(15)
-    expect(calculatePrice(base).total).toBe(15)
+describe("calculatePrice (Business Plan v3)", () => {
+  it("prices plans at the VAT-inclusive business-plan tiers", () => {
+    expect(PLANS.Basic.monthly).toBe(15)
+    expect(PLANS.Standard.monthly).toBe(30)
+    expect(PLANS.Premium.monthly).toBe(50)
+    expect(calculatePrice({ subscriptionPlan: "Standard", frameKit: false }).monthly).toBe(30)
   })
 
-  it("prices Standard and Premium at £30 and £50", () => {
-    expect(calculatePrice({ ...base, subscriptionPlan: "Standard" }).total).toBe(30)
-    expect(calculatePrice({ ...base, subscriptionPlan: "Premium" }).total).toBe(50)
+  it("exposes net (ex-VAT) revenue for royalty maths", () => {
+    const p = calculatePrice({ subscriptionPlan: "Standard", frameKit: false })
+    expect(p.monthlyNet).toBeCloseTo(30 / (1 + VAT_RATE))
+    expect(p.monthlyNet).toBeCloseTo(25)
   })
 
-  it("chains multipliers like the original formula", () => {
-    const p = calculatePrice({
-      ...base,
-      subscriptionPlan: "Standard",
-      artistTier: "Mid-Career",
-      artType: "Limited Edition Print",
-      size: "A3",
-    })
-    expect(p.base).toBe(30)
-    expect(p.artistTier).toBeCloseTo(24)
-    expect(p.artType).toBeCloseTo(81)
-    expect(p.size).toBeCloseTo(33.75)
-    expect(p.total).toBe(169)
+  it("maps prints per quarter to each plan", () => {
+    expect(calculatePrice({ subscriptionPlan: "Basic", frameKit: false }).prints).toBe(1)
+    expect(calculatePrice({ subscriptionPlan: "Standard", frameKit: false }).prints).toBe(3)
+    expect(calculatePrice({ subscriptionPlan: "Premium", frameKit: false }).prints).toBe(5)
   })
 
-  it("applies frame fee and 15% yearly discount", () => {
-    const p = calculatePrice({
-      ...base,
-      subscriptionPlan: "Standard",
-      frameCommitment: true,
-      billingCycle: "yearly",
-    })
-    expect(p.frame).toBe(12)
-    expect(p.discount).toBeCloseTo(6.3)
-    expect(p.total).toBe(36)
+  it("adds the one-time Frame Kit priced by rotation size", () => {
+    expect(calculatePrice({ subscriptionPlan: "Basic", frameKit: true }).frameKitOneOff).toBe(FRAME_KIT_PRICES[1])
+    expect(calculatePrice({ subscriptionPlan: "Standard", frameKit: true }).frameKitOneOff).toBe(79)
+    expect(calculatePrice({ subscriptionPlan: "Premium", frameKit: true }).frameKitOneOff).toBe(119)
+    expect(calculatePrice({ subscriptionPlan: "Standard", frameKit: false }).frameKitOneOff).toBe(0)
   })
 
-  it("caps custom plans at 10 pieces of £15", () => {
-    expect(CUSTOM_MAX_PIECES).toBe(10)
-    expect(clampCustomPieces(99)).toBe(10)
-    expect(clampCustomPieces(0)).toBe(1)
-    expect(clampCustomPieces(Number.NaN)).toBe(1)
-    expect(calculatePrice({ ...base, subscriptionPlan: "Custom", customPieces: 10 }).total).toBe(150)
-    expect(calculatePrice({ ...base, subscriptionPlan: "Custom", customPieces: 99 }).total).toBe(150)
-  })
-
-  it("returns zero before a plan is chosen", () => {
-    expect(calculatePrice({ ...base, subscriptionPlan: "" }).total).toBe(0)
+  it("returns zero before a plan is chosen and rejects unknown plans", () => {
+    expect(calculatePrice({ subscriptionPlan: "", frameKit: true }).monthly).toBe(0)
+    expect(calculatePrice({ subscriptionPlan: "Custom", frameKit: false }).monthly).toBe(0)
   })
 })

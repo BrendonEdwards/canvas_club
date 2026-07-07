@@ -6,14 +6,14 @@ import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/c
 import { Separator } from "@/components/ui/separator"
 import { CheckCircle } from "lucide-react"
 import { ART_STYLES, displayCredit, findStyle, findSubStyle } from "@/lib/art-data"
-import { formatGBP, MULTIPLIERS } from "@/lib/pricing"
+import { formatGBP } from "@/lib/pricing"
 import type { WizardState } from "./use-wizard-state"
 
 const nextSteps = [
   "Create your account and join the pilot",
-  "Our curators will select artwork based on your preferences",
-  "Your first quarterly delivery will arrive within 7-10 business days",
-  "Manage your taste profile anytime through your dashboard",
+  "Our curators match works from partner galleries to your taste profile",
+  "Your first collection arrives rolled in a reusable tube within 7-10 business days",
+  "Swap each quarter with a printer-free QR return — and buy any piece you love",
 ]
 
 export function ReviewStep({ wizard }: { wizard: WizardState }) {
@@ -33,7 +33,7 @@ export function ReviewStep({ wizard }: { wizard: WizardState }) {
           Review Your Selection
         </CardTitle>
         <CardDescription className="text-base leading-relaxed">
-          Review your art subscription details before creating your account.
+          Review your membership details before creating your account.
         </CardDescription>
       </div>
 
@@ -82,54 +82,44 @@ export function ReviewStep({ wizard }: { wizard: WizardState }) {
                 </div>
 
                 <div className="space-y-3">
-                  <h4 className="text-sm font-medium text-muted-foreground">Subscription Plan</h4>
-                  <p className="font-medium font-serif">{form.subscriptionPlan}</p>
-                  {form.subscriptionPlan === "Custom" && <p className="text-sm">{form.customPieces} pieces per month</p>}
-                  <p className="text-sm">
-                    Billed {form.billingCycle === "yearly" ? "annually" : "monthly"}
-                    {form.billingCycle === "yearly" && " (15% discount applied)"}
+                  <h4 className="text-sm font-medium text-muted-foreground">Membership</h4>
+                  <p className="font-medium font-serif">
+                    {form.subscriptionPlan} — {price.prints} {price.prints === 1 ? "print" : "prints"} per quarter
                   </p>
+                  <p className="text-sm">Billed monthly, prices include VAT</p>
                 </div>
               </div>
 
               <Separator className="my-2" />
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {[
-                  { label: "Artist Tier", value: form.artistTier, mult: MULTIPLIERS.artistTier[form.artistTier] },
-                  { label: "Art Type", value: form.artType, mult: MULTIPLIERS.artType[form.artType] },
-                  { label: "Size", value: form.size, mult: MULTIPLIERS.size[form.size] },
-                ].map(({ label, value, mult }) => (
-                  <div key={label} className="space-y-3">
-                    <h4 className="text-sm font-medium text-muted-foreground">{label}</h4>
-                    <div className="flex items-center gap-2">
-                      <Badge variant="outline" className="border-primary/30 text-primary">
-                        {value}
-                      </Badge>
-                      <span className="text-xs text-muted-foreground">({mult}x)</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="space-y-3">
-                <h4 className="text-sm font-medium text-muted-foreground">Frame Commitment</h4>
-                <p>{form.frameCommitment ? "Yes (adds £12 to monthly price)" : "No"}</p>
+                <div className="space-y-3">
+                  <h4 className="text-sm font-medium text-muted-foreground">Size Preference</h4>
+                  <Badge variant="outline" className="border-primary/30 text-primary">
+                    {form.sizePreference}
+                  </Badge>
+                </div>
+                <div className="space-y-3">
+                  <h4 className="text-sm font-medium text-muted-foreground">Frame Kit</h4>
+                  <p>{form.frameKit ? `Yes — ${formatGBP(price.frameKitOneOff)} one-time` : "No"}</p>
+                </div>
+                <div className="space-y-3">
+                  <h4 className="text-sm font-medium text-muted-foreground">Originals Early Access</h4>
+                  <p>{form.originalsInterest ? "Yes — on the list" : "Not yet"}</p>
+                </div>
               </div>
 
               <Separator className="my-2" />
 
-              <div className="bg-primary/5 p-6 rounded-lg">
+              <div className="bg-primary/5 p-6 rounded-lg space-y-2">
                 <div className="flex justify-between items-center">
-                  <span className="font-serif text-lg">
-                    Final {form.billingCycle === "yearly" ? "Monthly " : ""}Price:
-                  </span>
-                  <span className="text-2xl font-bold font-serif">{formatGBP(price.total)}</span>
+                  <span className="font-serif text-lg">Monthly price (inc VAT):</span>
+                  <span className="text-2xl font-bold font-serif">{formatGBP(price.monthly)}</span>
                 </div>
-                {form.billingCycle === "yearly" && (
-                  <div className="flex justify-between text-sm text-muted-foreground mt-2">
-                    <span>Annual payment:</span>
-                    <span>{formatGBP(price.total * 12)}</span>
+                {form.frameKit && (
+                  <div className="flex justify-between text-sm text-muted-foreground">
+                    <span>One-time Frame Kit at signup:</span>
+                    <span>{formatGBP(price.frameKitOneOff)}</span>
                   </div>
                 )}
               </div>

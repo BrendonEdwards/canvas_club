@@ -61,29 +61,27 @@ export function AccountStep({
           <h3 className="text-xl font-serif mb-6">Your Plan Summary</h3>
           <div className="space-y-3">
             <div className="flex justify-between text-base">
-              <span>Subscription Plan:</span>
-              <span>{form.subscriptionPlan}</span>
+              <span>Membership:</span>
+              <span>
+                {form.subscriptionPlan} — {price.prints} {price.prints === 1 ? "print" : "prints"}/quarter
+              </span>
             </div>
             <div className="flex justify-between text-base">
-              <span>Artist Tier:</span>
-              <span>{form.artistTier}</span>
+              <span>Size preference:</span>
+              <span>{form.sizePreference}</span>
             </div>
             <div className="flex justify-between text-base">
-              <span>Art Type:</span>
-              <span>{form.artType}</span>
+              <span>Frame Kit:</span>
+              <span>{form.frameKit ? `${formatGBP(price.frameKitOneOff)} one-time` : "No"}</span>
             </div>
             <div className="flex justify-between text-base">
-              <span>Size:</span>
-              <span>{form.size}</span>
-            </div>
-            <div className="flex justify-between text-base">
-              <span>Billing Cycle:</span>
-              <span className="capitalize">{form.billingCycle}</span>
+              <span>Originals early access:</span>
+              <span>{form.originalsInterest ? "Yes" : "No"}</span>
             </div>
             <Separator className="my-4" />
             <div className="flex justify-between font-bold text-lg">
-              <span>Indicative {form.billingCycle === "yearly" ? "Monthly " : ""}Price:</span>
-              <span>{formatGBP(price.total)}</span>
+              <span>Monthly price (inc VAT):</span>
+              <span>{formatGBP(price.monthly)}</span>
             </div>
           </div>
         </CardContent>

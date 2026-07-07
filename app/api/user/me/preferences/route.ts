@@ -26,6 +26,10 @@ export async function PUT(req: Request) {
       mainStyles: Array.isArray(incoming.mainStyles) ? incoming.mainStyles : user.preferences.mainStyles,
       subStyles: Array.isArray(incoming.subStyles) ? incoming.subStyles : user.preferences.subStyles,
       ratings: incoming.ratings && typeof incoming.ratings === "object" ? incoming.ratings : user.preferences.ratings,
+      originalsInterest:
+        typeof incoming.originalsInterest === "boolean"
+          ? incoming.originalsInterest
+          : user.preferences.originalsInterest,
     }
     const updated = await getStore().updateUser(user.email, { preferences })
     if (!updated) {

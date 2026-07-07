@@ -205,17 +205,15 @@ function DashboardContent() {
                     <Badge variant="secondary">{userData.subscription?.plan || "Pilot member"}</Badge>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Artist tier</span>
-                    <span>{userData.subscription?.artistTier ?? "—"}</span>
+                    <span className="text-muted-foreground">Size preference</span>
+                    <span>{userData.subscription?.sizePreference ?? "—"}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Format</span>
-                    <span>
-                      {userData.subscription ? `${userData.subscription.artType} · ${userData.subscription.size}` : "—"}
-                    </span>
+                    <span className="text-muted-foreground">Frame Kit</span>
+                    <span>{userData.subscription?.frameKit ? "Included" : "Not yet"}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Indicative price</span>
+                    <span className="text-muted-foreground">Monthly price (inc VAT)</span>
                     <span className="font-medium">
                       {userData.subscription ? `${formatGBP(userData.subscription.monthlyPrice)}/month` : "—"}
                     </span>
@@ -227,6 +225,36 @@ function DashboardContent() {
                 </CardContent>
               </Card>
             </div>
+
+            {/* Originals pipeline */}
+            <Card className="border-primary/20 bg-gradient-to-r from-primary/5 to-transparent">
+              <CardContent className="py-6 flex flex-col md:flex-row md:items-center gap-4 justify-between">
+                <div>
+                  <h3 className="font-serif text-lg font-medium flex items-center gap-2">
+                    <Sparkles className="h-4 w-4 text-primary" />
+                    Originals are coming
+                  </h3>
+                  <p className="text-sm text-muted-foreground mt-1 max-w-xl">
+                    We&rsquo;re working with our partner galleries to bring original works into rotation.
+                    Early access goes to members on the list — no commitment.
+                  </p>
+                </div>
+                <Button
+                  variant={userData.preferences.originalsInterest ? "secondary" : "default"}
+                  onClick={async () => {
+                    const next = !userData.preferences.originalsInterest
+                    const res = await fetch("/api/user/me/preferences", {
+                      method: "PUT",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ preferences: { originalsInterest: next } }),
+                    })
+                    if (res.ok) setUserData(await res.json())
+                  }}
+                >
+                  {userData.preferences.originalsInterest ? "On the early-access list ✓" : "Join the early-access list"}
+                </Button>
+              </CardContent>
+            </Card>
 
             {/* Rotation guide */}
             <Card>
