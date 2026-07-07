@@ -1,54 +1,42 @@
-export interface SubStyle {
-  id: string
-  name: string
-  image?: string
-}
+export type Rating = "love" | "like" | "dislike"
 
-export interface ArtStyle {
-  id: string
-  name: string
-  image: string
-  subStyles: SubStyle[]
-}
-
-export interface UserPreferences {
-  mainStyles: string[] // IDs of main styles
-  subStyles: string[] // IDs of sub styles
-  ratings: Record<string, number> // artworkId -> rating
-  excludedStyles?: string[]
+export interface Preferences {
+  mainStyles: string[] // ids of top-level styles
+  subStyles: string[] // ids of sub-styles
+  ratings: Record<string, Rating> // artworkId -> rating
 }
 
 export interface Subscription {
   plan: string // Basic, Standard, Premium, Custom
-  piecesPerQuarter: number
-  price: number
-  billingCycle: "monthly" | "yearly"
+  customPieces?: number
   artistTier: string
   artType: string
   size: string
   frameCommitment: boolean
-  nextDeliveryDate: string
-}
-
-export interface Artwork {
-  id: string
-  title: string
-  artist: string
-  imageUrl: string
-  returnDate: string
-  status: "active" | "returned" | "purchased"
+  billingCycle: "monthly" | "yearly"
+  monthlyPrice: number
 }
 
 export interface User {
   email: string
-  name?: string
-  password?: string // In a real app, this would be hashed
-  preferences: UserPreferences
-  subscription?: Subscription
-  currentRotation: Artwork[]
+  passwordHash: string
+  name: string
   joinedDate: string
+  preferences: Preferences
+  subscription: Subscription | null
 }
+
+export type SafeUser = Omit<User, "passwordHash">
 
 export interface DBSchema {
   users: User[]
+}
+
+export function toSafeUser(user: User): SafeUser {
+  const { passwordHash: _passwordHash, ...safe } = user
+  return safe
+}
+
+export function emptyPreferences(): Preferences {
+  return { mainStyles: [], subStyles: [], ratings: {} }
 }
