@@ -1,4 +1,6 @@
 import "./globals.css"
+import type { Metadata } from "next"
+import type { ReactNode } from "react"
 import { Inter, Playfair_Display } from "next/font/google"
 
 const inter = Inter({
@@ -11,14 +13,16 @@ const playfair = Playfair_Display({
   variable: "--font-playfair",
 })
 
-export default function RootLayout({ children }) {
+export const metadata: Metadata = {
+  title: "Canvas Club — Art that lives with you",
+  description:
+    "A quarterly art subscription that transforms your home and supports emerging artists.",
+}
+
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <body className={`${inter.variable} ${playfair.variable}`}>{children}</body>
     </html>
   )
 }
-
-export const metadata = {
-      generator: 'v0.dev'
-    };

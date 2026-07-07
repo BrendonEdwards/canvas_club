@@ -109,7 +109,7 @@ export function IntroStep() {
         <p className="mb-6 leading-relaxed">
           Our personalised art subscription service helps you discover new artists and styles while keeping your
           space fresh and inspiring. With quarterly deliveries, flexible options, and exclusive gallery access,
-          you'll never get bored of your walls again.
+          you&rsquo;ll never get bored of your walls again.
         </p>
         <ul className="space-y-4">
           {promises.map((line) => (

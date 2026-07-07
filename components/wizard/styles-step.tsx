@@ -19,7 +19,7 @@ export function StylesStep({ wizard }: { wizard: WizardState }) {
         </CardTitle>
         <CardDescription className="text-base leading-relaxed">
           Select the styles that resonate with you, then hit <span className="font-medium">Explore</span> on any
-          style to drill into its sub-genres — love Cubism? Tell us if it's the analytical or the synthetic kind.
+          style to drill into its sub-genres — love Cubism? Tell us if it&rsquo;s the analytical or the synthetic kind.
         </CardDescription>
       </div>
 

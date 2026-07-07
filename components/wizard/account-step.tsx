@@ -31,10 +31,10 @@ export function AccountStep({
           <div className="flex flex-col items-center text-center py-6">
             <CheckCircle className="h-14 w-14 text-primary mb-4" />
             <AlertDescription className="text-[#121212] text-xl font-medium font-serif">
-              You're on the pilot list!
+              You&rsquo;re on the pilot list!
             </AlertDescription>
             <p className="text-muted-foreground mt-4 leading-relaxed max-w-md">
-              Your taste profile is saved and our curators are preparing your first selection. We'll email you as
+              Your taste profile is saved and our curators are preparing your first selection. We&rsquo;ll email you as
               soon as your pilot box is confirmed — taking you to your dashboard now.
             </p>
           </div>
@@ -52,7 +52,7 @@ export function AccountStep({
         </CardTitle>
         <CardDescription className="text-base leading-relaxed">
           Create your account to save your taste profile and reserve your place. No payment is taken during the
-          pilot — we'll confirm details with you before your first box.
+          pilot — we&rsquo;ll confirm details with you before your first box.
         </CardDescription>
       </div>
 

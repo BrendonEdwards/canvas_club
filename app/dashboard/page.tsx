@@ -295,7 +295,7 @@ function DashboardContent() {
               {saveStatus === "error" && (
                 <Alert variant="destructive">
                   <AlertTitle>Something went wrong</AlertTitle>
-                  <AlertDescription>Your changes weren't saved. Please try again.</AlertDescription>
+                  <AlertDescription>Your changes weren&rsquo;t saved. Please try again.</AlertDescription>
                 </Alert>
               )}
 

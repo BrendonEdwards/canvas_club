@@ -71,9 +71,9 @@ export function RatingsStep({ wizard }: { wizard: WizardState }) {
         {ratingComplete || !current ? (
           <div className="text-center space-y-4 py-8">
             <CheckCircle className="h-16 w-16 text-primary mx-auto" />
-            <h3 className="text-xl font-serif">Perfect! We've got a good sense of your style.</h3>
+            <h3 className="text-xl font-serif">Perfect! We&rsquo;ve got a good sense of your style.</h3>
             <p className="text-muted-foreground">
-              Based on your ratings, we'll curate artwork that matches your taste.
+              Based on your ratings, we&rsquo;ll curate artwork that matches your taste.
             </p>
           </div>
         ) : (
