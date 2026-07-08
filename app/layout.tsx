@@ -14,7 +14,7 @@ const playfair = Playfair_Display({
 })
 
 export const metadata: Metadata = {
-  title: "Canvas Club: Art that lives with you",
+  title: "Canvas Club · Art that lives with you",
   description:
     "A quarterly art subscription that transforms your home and supports emerging artists.",
 }

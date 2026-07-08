@@ -28,8 +28,8 @@ const highlights = [
 const promises = [
   "Quarterly art refreshes with monthly payment plans",
   "Personalised curation based on your preferences",
-  "Options for prints, limited editions, and original artwork",
-  "Professional framing available for a polished look",
+  "Gallery prints and limited editions, with originals joining the pilot",
+  "Optional Frame Kit so every rotation is a 60-second swap",
   "Invites to exclusive exhibitions at our network of partner galleries",
 ]
 
@@ -108,8 +108,8 @@ export function IntroStep() {
       <div className="rounded-lg border shadow-subtle p-8 mt-10">
         <h3 className="text-2xl font-serif mb-2">Art from real galleries, not a print factory</h3>
         <p className="text-muted-foreground leading-relaxed mb-6">
-          Every work in circulation is a gallery-held edition with a named artist, a story and a royalty
-          artists and galleries are paid every quarter their work hangs on your wall.
+          Every work in circulation is a gallery-held edition with a named artist and a story. Artists and
+          galleries earn a royalty every quarter their work hangs on your wall.
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           {GALLERY_HUBS.map((hub) => (
