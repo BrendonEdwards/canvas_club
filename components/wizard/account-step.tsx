@@ -35,7 +35,7 @@ export function AccountStep({
             </AlertDescription>
             <p className="text-muted-foreground mt-4 leading-relaxed max-w-md">
               Your taste profile is saved and our curators are preparing your first selection. We&rsquo;ll email you as
-              soon as your pilot box is confirmed — taking you to your dashboard now.
+              soon as your pilot box is confirmed: taking you to your dashboard now.
             </p>
           </div>
         </Alert>
@@ -52,7 +52,7 @@ export function AccountStep({
         </CardTitle>
         <CardDescription className="text-base leading-relaxed">
           Create your account to save your taste profile and reserve your place. No payment is taken during the
-          pilot — we&rsquo;ll confirm details with you before your first box.
+          pilot: we&rsquo;ll confirm details with you before your first box.
         </CardDescription>
       </div>
 
@@ -63,7 +63,7 @@ export function AccountStep({
             <div className="flex justify-between text-base">
               <span>Membership:</span>
               <span>
-                {form.subscriptionPlan} — {price.prints} {price.prints === 1 ? "print" : "prints"}/quarter
+                {form.subscriptionPlan}: {price.prints} {price.prints === 1 ? "print" : "prints"}/quarter
               </span>
             </div>
             <div className="flex justify-between text-base">

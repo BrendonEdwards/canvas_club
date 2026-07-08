@@ -42,6 +42,10 @@ function DashboardContent() {
       router.push("/login")
       return
     }
+    if (user.role === "gallery") {
+      router.push("/partner")
+      return
+    }
     setUserData(user)
     setEdited({
       mainStyles: user.preferences?.mainStyles ?? [],
@@ -121,7 +125,7 @@ function DashboardContent() {
             <Sparkles className="h-4 w-4 text-primary" />
             <AlertTitle className="font-serif">Welcome to the Canvas Club pilot!</AlertTitle>
             <AlertDescription>
-              Your taste profile is saved. Our curators are preparing your first selection — refine your taste
+              Your taste profile is saved. Our curators are preparing your first selection: refine your taste
               anytime below and your matches will update.
             </AlertDescription>
           </Alert>
@@ -206,7 +210,7 @@ function DashboardContent() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Size preference</span>
-                    <span>{userData.subscription?.sizePreference ?? "—"}</span>
+                    <span>{userData.subscription?.sizePreference ?? "-"}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Frame Kit</span>
@@ -215,7 +219,7 @@ function DashboardContent() {
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Monthly price (inc VAT)</span>
                     <span className="font-medium">
-                      {userData.subscription ? `${formatGBP(userData.subscription.monthlyPrice)}/month` : "—"}
+                      {userData.subscription ? `${formatGBP(userData.subscription.monthlyPrice)}/month` : "-"}
                     </span>
                   </div>
                   <div className="flex justify-between">
@@ -236,7 +240,7 @@ function DashboardContent() {
                   </h3>
                   <p className="text-sm text-muted-foreground mt-1 max-w-xl">
                     We&rsquo;re working with our partner galleries to bring original works into rotation.
-                    Early access goes to members on the list — no commitment.
+                    Early access goes to members on the list: no commitment.
                   </p>
                 </div>
                 <Button
@@ -267,7 +271,7 @@ function DashboardContent() {
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
                   {[
-                    "Live with your pieces for the quarter — no rush, no pressure.",
+                    "Live with your pieces for the quarter: no rush, no pressure.",
                     "Loved something? Tell us and we'll arrange a route to purchase.",
                     "Ready for a refresh? Pack the reusable box and we handle collection.",
                   ].map((text, i) => (
@@ -319,7 +323,7 @@ function DashboardContent() {
               {saveStatus === "success" && (
                 <Alert className="bg-green-50 text-green-800 border-green-200">
                   <AlertTitle>Saved</AlertTitle>
-                  <AlertDescription>Your preferences have been updated — your matches will refresh.</AlertDescription>
+                  <AlertDescription>Your preferences have been updated: your matches will refresh.</AlertDescription>
                 </Alert>
               )}
               {saveStatus === "error" && (

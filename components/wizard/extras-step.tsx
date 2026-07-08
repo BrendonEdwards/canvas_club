@@ -11,8 +11,8 @@ import { formatGBP, FRAME_KIT_PRICES, PLANS, isPlan } from "@/lib/pricing"
 import type { WizardState } from "./use-wizard-state"
 
 const sizeOptions = [
-  { value: "A3", label: "A3", blurb: "29.7 × 42.0 cm — desks, shelves and smaller walls" },
-  { value: "A2", label: "A2", blurb: "42.0 × 59.4 cm — a statement above furniture" },
+  { value: "A3", label: "A3", blurb: "29.7 × 42.0 cm: desks, shelves and smaller walls" },
+  { value: "A2", label: "A2", blurb: "42.0 × 59.4 cm: a statement above furniture" },
   { value: "Mixed", label: "Mixed", blurb: "Let our curators vary sizes across your collection" },
 ]
 
@@ -56,7 +56,7 @@ export function ExtrasStep({ wizard }: { wizard: WizardState }) {
           ))}
         </RadioGroup>
         <p className="text-xs text-muted-foreground">
-          Size preference guides curation — it doesn&rsquo;t change your monthly price.
+          Size preference guides curation: it doesn&rsquo;t change your monthly price.
         </p>
       </div>
 
@@ -76,12 +76,12 @@ export function ExtrasStep({ wizard }: { wizard: WizardState }) {
         />
         <div className="space-y-2">
           <Label htmlFor="frameKit" className="font-medium font-serif text-lg cursor-pointer">
-            Add the Canvas Club Frame Kit —{" "}
+            Add the Canvas Club Frame Kit{" "}
             <span className="whitespace-nowrap">{formatGBP(kitPrice)} one-time</span>
           </Label>
           <p className="text-muted-foreground leading-relaxed">
             {prints} quick-swap {prints === 1 ? "frame" : "frames"} that you keep. Each rotation becomes a
-            60-second swap — no framing shop, no tools. Prints arrive rolled in our reusable tube and slot
+            60-second swap: no framing shop, no tools. Prints arrive rolled in our reusable tube and slot
             straight in.
           </p>
           <Badge variant="outline" className="border-primary/30 text-primary">
@@ -105,11 +105,11 @@ export function ExtrasStep({ wizard }: { wizard: WizardState }) {
         <div className="space-y-2">
           <Label htmlFor="originalsInterest" className="font-medium font-serif text-lg cursor-pointer">
             <Sparkles className="inline h-4 w-4 text-primary mr-1" />
-            Originals are coming — keep me on the early-access list
+            Originals are coming: keep me on the early-access list
           </Label>
           <p className="text-muted-foreground leading-relaxed">
             We&rsquo;re working with our partner galleries to bring original works into rotation for members.
-            No commitment — we&rsquo;ll simply let you know first.
+            No commitment: we&rsquo;ll simply let you know first.
           </p>
         </div>
       </div>

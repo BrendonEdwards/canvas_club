@@ -31,7 +31,7 @@ export default function LoginPage() {
     setLoading(true)
     const result = await login(formData.email, formData.password)
     if (result.ok) {
-      router.push("/dashboard")
+      router.push(result.user.role === "gallery" ? "/partner" : "/dashboard")
     } else {
       setError(result.error)
       setLoading(false)

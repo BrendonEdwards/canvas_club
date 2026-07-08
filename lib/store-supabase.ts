@@ -8,6 +8,8 @@ interface UserRow {
   joined_date: string
   preferences: Preferences
   subscription: Subscription | null
+  role?: string
+  gallery_id?: string | null
 }
 
 function toUser(row: UserRow): User {
@@ -18,6 +20,8 @@ function toUser(row: UserRow): User {
     joinedDate: row.joined_date,
     preferences: row.preferences,
     subscription: row.subscription,
+    role: (row.role as User["role"]) ?? "member",
+    galleryId: row.gallery_id ?? undefined,
   }
 }
 
@@ -29,6 +33,8 @@ function toRow(user: User): UserRow {
     joined_date: user.joinedDate,
     preferences: user.preferences,
     subscription: user.subscription,
+    role: user.role ?? "member",
+    gallery_id: user.galleryId ?? null,
   }
 }
 

@@ -1,5 +1,5 @@
 // Launch hub galleries. Hubs are supply and curation partners, not geographic
-// limits — Canvas Club serves the whole UK from launch (Business Plan v3 §8.1).
+// limits: Canvas Club serves the whole UK from launch (Business Plan v3 §8.1).
 export interface GalleryHub {
   id: string
   name: string
@@ -13,7 +13,7 @@ export const GALLERY_HUBS: GalleryHub[] = [
     id: "red-house",
     name: "Red House Gallery",
     location: "Harrogate",
-    role: "Anchor partner — prints and editions",
+    role: "Anchor partner: prints and editions",
     status: "anchor",
   },
   {

@@ -41,7 +41,7 @@ export function RatingsStep({ wizard }: { wizard: WizardState }) {
           Refine Your Taste
         </CardTitle>
         <CardDescription className="text-base leading-relaxed">
-          Rate one work from each style. Your ratings — with your selected styles — shape every box we curate for you.
+          Rate one work from each style. Your ratings: with your selected styles: shape every box we curate for you.
         </CardDescription>
       </div>
 

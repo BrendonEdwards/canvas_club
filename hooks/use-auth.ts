@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react"
 import type { SafeUser } from "@/lib/types"
 
-export type LoginResult = { ok: true } | { ok: false; error: string }
+export type LoginResult = { ok: true; user: SafeUser } | { ok: false; error: string }
 
 export function useAuth() {
   const [user, setUser] = useState<SafeUser | null>(null)
@@ -32,8 +32,9 @@ export function useAuth() {
         body: JSON.stringify({ email, password }),
       })
       if (res.ok) {
-        setUser(await res.json())
-        return { ok: true }
+        const nextUser: SafeUser = await res.json()
+        setUser(nextUser)
+        return { ok: true, user: nextUser }
       }
       const data = await res.json().catch(() => ({}))
       return { ok: false, error: data.error ?? "Invalid email or password" }

@@ -22,13 +22,12 @@ export const MANIFEST = {
   "portrait": wm("Meisje met de parel.jpg"),
   "minimalist": wm("Whistler - Nocturne. Blue and Silver - Chelsea (1871).jpg"),
   "surrealism": wm("Henri Rousseau - Il sogno.jpg"),
-  "pop-art": us("photo-1550935114-99de2f488f47"),
+  "pop-art": wm("Maurin quina. Le Puy. France affiche, Leonetto Cappiello.jpg"),
   "cubism": wm("Juan Gris - Portrait of Pablo Picasso - Google Art Project.jpg"),
   "watercolour": wm("Winslow Homer - The Blue Boat - Google Art Project.jpg"),
-  "black-white": us("photo-1502657877623-f66bf489d236"),
+  "black-white": wm("Alfred Stieglitz Winter Fifth Avenue 1892.jpg"),
   "urban": us("photo-1480714378408-67cf0d13bc1b"),
   "nature": us("photo-1441974231531-c6227db76b6e"),
-  "digital-art": us("photo-1550745165-9bc0b252726f"),
 
   // ── sub-styles ──────────────────────────────────────────────
   "geometric": wm("Piet Mondriaan, 1930 - Mondrian Composition II in Red, Blue, and Yellow.jpg"),
@@ -43,7 +42,7 @@ export const MANIFEST = {
 
   "pastoral": wm("Themistokles von Eckenbrecher Utsikt over Lærdalsøren.jpeg"),
   "seascape": wm("Tsunami by hokusai 19th century.jpg"),
-  "mountain": us("photo-1464822759023-fed622ff2c3b"),
+  "mountain": wm("Red Fuji southern wind clear morning.jpg"),
   "forest": us("photo-1448375240586-882707db888b"),
   "urban-landscape": wm("Gustave Caillebotte - Paris Street; Rainy Day - Google Art Project.jpg"),
 
@@ -52,29 +51,28 @@ export const MANIFEST = {
   "contemporary-portrait": us("photo-1531746020798-e6953c6e8e04"),
   "figurative": wm("Edgar Degas - The Ballet Class - Google Art Project.jpg"),
 
-  "line-art": us("photo-1544967082-d9d25d867d66"),
-  "monochrome": us("photo-1507525428034-b723cf961d3e"),
-  "scandinavian": us("photo-1513519245088-0e12902e5a38"),
-  "geometric-minimal": us("photo-1550684848-fac1c5b4e853"),
+  "line-art": wm("The Peacock Skirt - Aubrey Beardsley.jpg"),
+  "monochrome": wm("Alfred Stieglitz - The Steerage - Google Art Project.jpg"),
+  "scandinavian": wm("Vilhelm Hammershoi - Interieur mit Rueckenansicht einer Frau - 1903-1904 - Randers Kunstmuseum.jpg"),
+  "geometric-minimal": wm("Kazimir Malevich - 'Suprematist Composition', 1916.jpg"),
 
   "dreamscapes": wm("Henri Rousseau 010.jpg"),
   "symbolism": wm("Redon.cyclops.jpg"),
-  "surreal-photography": us("photo-1549465220-1a8b9238cd48"),
 
-  "comic-strip": us("photo-1612036782180-6f0b6cd846fe"),
-  "advertising": us("photo-1572375992501-4b0892d50c69"),
-  "collage-pop": us("photo-1579783901586-d88db74b4fe4"),
+  "comic-strip": wm("Little Nemo 1906-10-21.jpg"),
+  "advertising": wm("Lautrec moulin rouge, la goulue (poster) 1891.jpg"),
+  "collage-pop": wm("Merz-Painting 9b (also known as 'The Big Me-Painting').jpg"),
 
   "analytical-cubism": wm("Robert Delaunay, 1910, La ville no. 2, oil on canvas, 146 x 114 cm, Musée National d'Art Moderne, Centre Georges Pompidou, Paris.jpg"),
   "synthetic-cubism": wm("Still Life with Checked Tablecloth Juan Gris 1915.jpeg"),
 
   "loose-wash": wm("Venice MET DT2889.jpg"),
-  "botanical-watercolour": us("photo-1520763185298-1b434c919102"),
-  "urban-sketch": us("photo-1513364776144-60967b0f800f"),
+  "botanical-watercolour": wm("Rosa centifolia Burgundiaca.jpg"),
+  "urban-sketch": wm("James McNeill Whistler - The Doorway - Google Art Project.jpg"),
 
-  "documentary": us("photo-1533105079780-92b9be482077"),
-  "architectural-bw": us("photo-1486718448742-163732cd1544"),
-  "fine-art-bw": us("photo-1494548162494-384bba4ab999"),
+  "documentary": wm("Bandits' Roost, 59 1-2 Mulberry Street by Jacob August Riis, 1888.jpg"),
+  "architectural-bw": wm("Alfred Stieglitz - The Flatiron Building - Google Art Project.jpg"),
+  "fine-art-bw": wm("Misonne, Molen.jpg"),
 
   "cityscape": wm("Camille Pissarro - Boulevard Montmartre - Eremitage.jpg"),
   "night-city": us("photo-1519501025264-65ba15a82390"),
@@ -83,8 +81,6 @@ export const MANIFEST = {
   "wildlife": us("photo-1474511320723-9a56873867b5"),
   "coastal-nature": us("photo-1505118380757-91f5f5632de0"),
 
-  "glitch": us("photo-1550684376-efcbd6e3f031"),
-  "render-3d": us("photo-1633356122544-f134324a6cee"),
   "digital-collage": us("photo-1547891654-e66ed7ebb968"),
 }
 

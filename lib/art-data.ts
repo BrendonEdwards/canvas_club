@@ -8,8 +8,8 @@ export interface ArtImage {
   src: string
   artist: string
   title: string
-  source: "Wikimedia Commons" | "Unsplash"
-  license: "Public domain" | "Unsplash Licence"
+  source: "Wikimedia Commons" | "Unsplash" | "Canvas Club Studio"
+  license: "Public domain" | "Unsplash Licence" | "CC0 (derived from public-domain works)"
 }
 
 export interface SubStyle {
@@ -40,6 +40,14 @@ const pd = (id: string, artist: string, title: string): ArtImage => ({
   title,
   source: "Wikimedia Commons",
   license: "Public domain",
+})
+
+const studio = (id: string, title: string): ArtImage => ({
+  src: `/art/${id}.jpg`,
+  artist: "Canvas Club Studio",
+  title,
+  source: "Canvas Club Studio",
+  license: "CC0 (derived from public-domain works)",
 })
 
 const photo = (id: string, title: string): ArtImage => ({
@@ -101,7 +109,7 @@ export const ART_STYLES: ArtStyle[] = [
     subStyles: [
       { id: "pastoral", name: "Pastoral", image: pd("pastoral", "Themistokles von Eckenbrecher", "View of Lærdalsøren (1901)") },
       { id: "seascape", name: "Seascape", image: pd("seascape", "Katsushika Hokusai", "The Great Wave off Kanagawa (c.1831)") },
-      { id: "mountain", name: "Mountainscapes", image: photo("mountain", "Alpine mountain range") },
+      { id: "mountain", name: "Mountainscapes", image: pd("mountain", "Katsushika Hokusai", "Fine Wind, Clear Morning (c.1831)") },
       { id: "forest", name: "Forest Scenes", image: photo("forest", "Sunlit forest path") },
       { id: "urban-landscape", name: "Urban Landscape", image: pd("urban-landscape", "Gustave Caillebotte", "Paris Street; Rainy Day (1877)") },
     ],
@@ -128,7 +136,7 @@ export const ART_STYLES: ArtStyle[] = [
     id: "minimalist",
     name: "Minimalist",
     description: "Restraint, negative space and quiet tonal harmony.",
-    image: pd("minimalist", "James McNeill Whistler", "Nocturne: Blue and Silver — Chelsea (1871)"),
+    image: pd("minimalist", "James McNeill Whistler", "Nocturne in Blue and Silver, Chelsea (1871)"),
     taxonomy: {
       visualTags: ["negative space", "clean lines", "reduction"],
       colourTraits: ["neutral palette", "tonal", "low contrast"],
@@ -136,16 +144,16 @@ export const ART_STYLES: ArtStyle[] = [
       eraMedium: ["19th–21st century", "mixed media", "photography"],
     },
     subStyles: [
-      { id: "line-art", name: "Line Art", image: photo("line-art", "Minimal single-line drawing") },
-      { id: "monochrome", name: "Monochrome", image: photo("monochrome", "Calm monochrome seascape") },
-      { id: "scandinavian", name: "Scandinavian", image: photo("scandinavian", "Scandinavian interior still life") },
-      { id: "geometric-minimal", name: "Geometric Minimal", image: photo("geometric-minimal", "Minimal geometric architecture") },
+      { id: "line-art", name: "Line Art", image: pd("line-art", "Aubrey Beardsley", "The Peacock Skirt (1893)") },
+      { id: "monochrome", name: "Monochrome", image: pd("monochrome", "Alfred Stieglitz", "The Steerage (1907)") },
+      { id: "scandinavian", name: "Scandinavian", image: pd("scandinavian", "Vilhelm Hammershøi", "Interior with Woman from Behind (1903)") },
+      { id: "geometric-minimal", name: "Geometric Minimal", image: pd("geometric-minimal", "Kazimir Malevich", "Suprematist Composition (1916)") },
     ],
   },
   {
     id: "surrealism",
     name: "Surrealism",
-    description: "Dream logic — familiar things in impossible arrangements.",
+    description: "Dream logic: familiar things in impossible arrangements.",
     image: pd("surrealism", "Henri Rousseau", "The Dream (1910)"),
     taxonomy: {
       visualTags: ["dreamlike", "juxtaposition", "uncanny"],
@@ -154,16 +162,16 @@ export const ART_STYLES: ArtStyle[] = [
       eraMedium: ["early 20th century", "oil on canvas", "photography"],
     },
     subStyles: [
-      { id: "dreamscapes", name: "Dreamscapes", image: pd("dreamscapes", "Henri Rousseau", "Jungle scene") },
+      { id: "dreamscapes", name: "Dreamscapes", image: pd("dreamscapes", "Henri Rousseau", "The Sleeping Gypsy (1897)") },
       { id: "symbolism", name: "Symbolism", image: pd("symbolism", "Odilon Redon", "The Cyclops (c.1914)") },
-      { id: "surreal-photography", name: "Surreal Photography", image: photo("surreal-photography", "Surreal staged photograph") },
+      { id: "surreal-photography", name: "Surreal Photography", image: studio("surreal-photography", "Double exposure study (after Vermeer and Van Gogh)") },
     ],
   },
   {
     id: "pop-art",
     name: "Pop Art",
-    description: "Bold, graphic and playful — art borrowed from popular culture.",
-    image: photo("pop-art", "Pop-style colour portrait"),
+    description: "Bold, graphic and playful: art borrowed from popular culture.",
+    image: pd("pop-art", "Leonetto Cappiello", "Maurin Quina (1906)"),
     taxonomy: {
       visualTags: ["bold outlines", "graphic", "playful"],
       colourTraits: ["primary colours", "high saturation", "flat colour"],
@@ -171,9 +179,9 @@ export const ART_STYLES: ArtStyle[] = [
       eraMedium: ["20th–21st century", "screen print", "digital"],
     },
     subStyles: [
-      { id: "comic-strip", name: "Comic Strip Style", image: photo("comic-strip", "Comic-style graphic wall") },
-      { id: "advertising", name: "Advertising Aesthetic", image: photo("advertising", "Retro advertising signage") },
-      { id: "collage-pop", name: "Collage", image: photo("collage-pop", "Layered paper collage") },
+      { id: "comic-strip", name: "Comic Strip Style", image: pd("comic-strip", "Winsor McCay", "Little Nemo in Slumberland (1906)") },
+      { id: "advertising", name: "Advertising Aesthetic", image: pd("advertising", "Henri de Toulouse-Lautrec", "Moulin Rouge: La Goulue (1891)") },
+      { id: "collage-pop", name: "Collage", image: pd("collage-pop", "Kurt Schwitters", "Merz-Painting 9b (1919)") },
     ],
   },
   {
@@ -205,15 +213,15 @@ export const ART_STYLES: ArtStyle[] = [
     },
     subStyles: [
       { id: "loose-wash", name: "Loose Wash", image: pd("loose-wash", "John Singer Sargent", "Venice (c.1902)") },
-      { id: "botanical-watercolour", name: "Botanical", image: photo("botanical-watercolour", "Botanical flower study") },
-      { id: "urban-sketch", name: "Urban Sketching", image: photo("urban-sketch", "City sketching scene") },
+      { id: "botanical-watercolour", name: "Botanical", image: pd("botanical-watercolour", "Pierre-Joseph Redouté", "Rosa centifolia Burgundiaca") },
+      { id: "urban-sketch", name: "Urban Sketching", image: pd("urban-sketch", "James McNeill Whistler", "The Doorway (1880)") },
     ],
   },
   {
     id: "black-white",
     name: "Black & White",
-    description: "Monochrome photography — light, shadow and story.",
-    image: photo("black-white", "High-contrast monochrome scene"),
+    description: "Monochrome photography: light, shadow and story.",
+    image: pd("black-white", "Alfred Stieglitz", "Winter, Fifth Avenue (1893)"),
     taxonomy: {
       visualTags: ["monochrome", "high contrast", "strong composition"],
       colourTraits: ["black and white", "grey tonal range"],
@@ -221,15 +229,15 @@ export const ART_STYLES: ArtStyle[] = [
       eraMedium: ["20th–21st century", "film", "digital photography"],
     },
     subStyles: [
-      { id: "documentary", name: "Documentary", image: photo("documentary", "Candid street documentary") },
-      { id: "architectural-bw", name: "Architectural", image: photo("architectural-bw", "Brutalist architecture study") },
-      { id: "fine-art-bw", name: "Fine Art", image: photo("fine-art-bw", "Fine-art monochrome landscape") },
+      { id: "documentary", name: "Documentary", image: pd("documentary", "Jacob Riis", "Bandits' Roost (1888)") },
+      { id: "architectural-bw", name: "Architectural", image: pd("architectural-bw", "Alfred Stieglitz", "The Flatiron (1903)") },
+      { id: "fine-art-bw", name: "Fine Art", image: pd("fine-art-bw", "Léonard Misonne", "The Mill") },
     ],
   },
   {
     id: "urban",
     name: "Urban",
-    description: "The energy of the city — streets, skylines and neon.",
+    description: "The energy of the city: streets, skylines and neon.",
     image: photo("urban", "City skyline at dusk"),
     taxonomy: {
       visualTags: ["cityscape", "geometry of streets", "human bustle"],
@@ -262,8 +270,8 @@ export const ART_STYLES: ArtStyle[] = [
   {
     id: "digital-art",
     name: "Digital Art",
-    description: "Born on screen — renders, glitches and layered digital worlds.",
-    image: photo("digital-art", "Abstract digital artwork"),
+    description: "Born on screen: renders, glitches and layered digital worlds.",
+    image: studio("digital-art", "Pixel-sorted Great Wave (after Hokusai)"),
     taxonomy: {
       visualTags: ["synthetic", "layered textures", "screen-native"],
       colourTraits: ["vibrant", "duotone", "neon gradients"],
@@ -271,8 +279,8 @@ export const ART_STYLES: ArtStyle[] = [
       eraMedium: ["21st century", "digital"],
     },
     subStyles: [
-      { id: "glitch", name: "Glitch", image: photo("glitch", "Glitch light abstraction") },
-      { id: "render-3d", name: "3D Render", image: photo("render-3d", "Stylised 3D render") },
+      { id: "glitch", name: "Glitch", image: studio("glitch", "Glitch study (after Leonardo)") },
+      { id: "render-3d", name: "3D Render", image: studio("render-3d", "Gradient forms study") },
       { id: "digital-collage", name: "Digital Collage", image: photo("digital-collage", "Layered digital collage") },
     ],
   },

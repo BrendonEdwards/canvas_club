@@ -42,7 +42,7 @@ export function PlanStep({ wizard }: { wizard: WizardState }) {
           Membership Plan
         </CardTitle>
         <CardDescription className="text-base leading-relaxed">
-          Choose the plan that fits your walls. All prices include VAT — no payment is taken during the pilot.
+          Choose the plan that fits your walls. All prices include VAT: no payment is taken during the pilot.
         </CardDescription>
       </div>
 
@@ -67,7 +67,7 @@ export function PlanStep({ wizard }: { wizard: WizardState }) {
                 {plan.popular && <Badge className="ml-2 bg-primary/20 text-primary">Most Popular</Badge>}
               </div>
               <p className="text-muted-foreground mt-1 leading-relaxed">
-                £{PLANS[plan.id].monthly}/month inc VAT — {plan.tagline}
+                £{PLANS[plan.id].monthly}/month inc VAT: {plan.tagline}
               </p>
               <ul className="text-sm mt-4 space-y-2 leading-relaxed">
                 {plan.features.map((f) => (

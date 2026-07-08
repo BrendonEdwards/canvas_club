@@ -1,5 +1,5 @@
 // Pricing aligned to the UK Business Plan v3: customer prices are VAT-inclusive,
-// plans are flat monthly tiers (no per-option multipliers — galleries price
+// plans are flat monthly tiers (no per-option multipliers: galleries price
 // buy-to-keep works themselves), and the Frame Kit is a one-time add-on.
 
 export const VAT_RATE = 0.2
@@ -26,7 +26,7 @@ export interface PricingInput {
 
 export interface PriceBreakdown {
   monthly: number // inc VAT
-  monthlyNet: number // ex VAT — what royalties are calculated on
+  monthlyNet: number // ex VAT: what royalties are calculated on
   frameKitOneOff: number // inc VAT, charged once at signup
   prints: number
 }

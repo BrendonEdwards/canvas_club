@@ -13,7 +13,7 @@ const nextSteps = [
   "Create your account and join the pilot",
   "Our curators match works from partner galleries to your taste profile",
   "Your first collection arrives rolled in a reusable tube within 7-10 business days",
-  "Swap each quarter with a printer-free QR return — and buy any piece you love",
+  "Swap each quarter with a printer-free QR return, and buy any piece you love",
 ]
 
 export function ReviewStep({ wizard }: { wizard: WizardState }) {
@@ -84,7 +84,7 @@ export function ReviewStep({ wizard }: { wizard: WizardState }) {
                 <div className="space-y-3">
                   <h4 className="text-sm font-medium text-muted-foreground">Membership</h4>
                   <p className="font-medium font-serif">
-                    {form.subscriptionPlan} — {price.prints} {price.prints === 1 ? "print" : "prints"} per quarter
+                    {form.subscriptionPlan}: {price.prints} {price.prints === 1 ? "print" : "prints"} per quarter
                   </p>
                   <p className="text-sm">Billed monthly, prices include VAT</p>
                 </div>
@@ -101,11 +101,11 @@ export function ReviewStep({ wizard }: { wizard: WizardState }) {
                 </div>
                 <div className="space-y-3">
                   <h4 className="text-sm font-medium text-muted-foreground">Frame Kit</h4>
-                  <p>{form.frameKit ? `Yes — ${formatGBP(price.frameKitOneOff)} one-time` : "No"}</p>
+                  <p>{form.frameKit ? `Yes: ${formatGBP(price.frameKitOneOff)} one-time` : "No"}</p>
                 </div>
                 <div className="space-y-3">
                   <h4 className="text-sm font-medium text-muted-foreground">Originals Early Access</h4>
-                  <p>{form.originalsInterest ? "Yes — on the list" : "Not yet"}</p>
+                  <p>{form.originalsInterest ? "Yes: on the list" : "Not yet"}</p>
                 </div>
               </div>
 

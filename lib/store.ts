@@ -12,7 +12,7 @@ export interface UserStore {
 let store: UserStore | null = null
 
 // Supabase when configured (SUPABASE_URL + SUPABASE_SECRET_KEY in env),
-// otherwise the local file store — so dev and tests never need the network.
+// otherwise the local file store: so dev and tests never need the network.
 export function getStore(): UserStore {
   if (!store) {
     const url = process.env.SUPABASE_URL

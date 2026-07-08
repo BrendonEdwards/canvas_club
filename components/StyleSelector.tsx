@@ -63,7 +63,7 @@ export function StyleSelector({
                 <div className="aspect-[4/3] w-full relative overflow-hidden">
                   <Image
                     src={style.image.src}
-                    alt={`${style.name} — ${style.image.title} by ${style.image.artist}`}
+                    alt={`${style.name}: ${style.image.title} by ${style.image.artist}`}
                     fill
                     sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -144,7 +144,7 @@ export function StyleSelector({
                         <div className="aspect-square relative">
                           <Image
                             src={sub.image.src}
-                            alt={`${sub.name} — ${sub.image.title} by ${sub.image.artist}`}
+                            alt={`${sub.name}: ${sub.image.title} by ${sub.image.artist}`}
                             fill
                             sizes="(max-width: 768px) 50vw, 33vw"
                             className="object-cover"
