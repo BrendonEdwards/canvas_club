@@ -6,7 +6,7 @@
 
 **Architecture:** Extend the existing pattern everywhere: typed domain objects in `lib/types.ts`, a store interface with Supabase + file implementations, thin session-guarded API routes, client pages consuming them. New subsystems (billing, email, rotations, ledger) each get their own `lib/` module with unit tests, a Supabase migration committed under `supabase/migrations/`, and API routes under `app/api/`. Pure logic (assignment engine, splits, token hashing) is always separated from I/O so it is unit-testable.
 
-**Tech Stack:** Next.js 15 App Router, TypeScript, Supabase Postgres + Storage, Stripe (Checkout + Billing Portal + webhooks), Resend (email), vitest, Playwright, Sentry.
+**Tech Stack:** Next.js 15 App Router, TypeScript, Supabase Postgres + Storage, Lemon Squeezy (hosted checkout + customer portal + webhooks), Resend (email), vitest, Playwright, Sentry.
 
 ## Global Constraints
 
@@ -27,7 +27,7 @@
 |---|---|---|---|
 | M0 | Platform guardrails | D2, H1, H2, H3, H4(doc) | none |
 | M1 | Addresses, email, password reset | B4, C1, C2, D1, D6 | Resend key + DNS |
-| M2 | Billing | A1-A5, D4, F3(export/delete) | Stripe keys |
+| M2 | Billing | A1-A5, D4, F3(export/delete) | Lemon Squeezy API key, store id, webhook secret |
 | M3 | Rotations + assignment | B1, B2, B9, E3, I1 | none |
 | M4 | Fulfilment + returns + ledger | B3, B5(manual), B6, B8 | none |
 | M5 | Catalogue, imagery, buy-to-keep | E1, E2, B7 | none |
@@ -133,7 +133,9 @@ Deferred P2 (tracked, not planned here): D5 email verification, D7 session table
 
 ---
 
-## Milestone 2: Billing (Stripe) — [EXT: STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, price setup]
+## Milestone 2: Billing (Lemon Squeezy) — ON HOLD [EXT: LEMONSQUEEZY_API_KEY, LEMONSQUEEZY_STORE_ID, LEMONSQUEEZY_WEBHOOK_SECRET]
+
+> **2026-07-09 amendment:** Brendon will use his existing Lemon Squeezy account instead of Stripe. This milestone is parked until credentials arrive, at which point tasks 2.1-2.3 below get re-specified against the Lemon Squeezy API before execution: hosted checkout URLs per variant (3 subscription variants + 3 one-time Frame Kit variants), `POST /api/billing/webhook` verifying the `X-Signature` HMAC-SHA256 header, `subscription_created/updated/expired` + `order_created` events mapping to `billingStatus`, and the LS customer portal URL for self-serve cancellation (spec A4). The Stripe-specific text below is retained as the structural template only. Task 5.3 (buy-to-keep) shares this dependency and is parked with it; the rest of M5 is not.
 
 ### Task 2.1: Billing state + Stripe products
 
