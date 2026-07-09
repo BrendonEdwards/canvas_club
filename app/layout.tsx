@@ -1,16 +1,17 @@
 import "./globals.css"
 import type { Metadata } from "next"
 import type { ReactNode } from "react"
-import { Inter, Playfair_Display } from "next/font/google"
+import { Archivo, Fraunces } from "next/font/google"
 
-const inter = Inter({
+const archivo = Archivo({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-body",
 })
 
-const playfair = Playfair_Display({
+const fraunces = Fraunces({
   subsets: ["latin"],
-  variable: "--font-playfair",
+  variable: "--font-display",
+  axes: ["opsz", "SOFT", "WONK"],
 })
 
 export const metadata: Metadata = {
@@ -22,7 +23,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${playfair.variable}`}>{children}</body>
+      <body className={`${archivo.variable} ${fraunces.variable}`}>{children}</body>
     </html>
   )
 }

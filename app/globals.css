@@ -2,26 +2,30 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Gallery token system (design pass, July 2026):
+   wall / paper / ink / rail / stone, with vermilion reserved for the
+   red dot - the gallery "sold" sticker that marks every selection. */
 :root {
-  --background: 0 0% 98%;
-  --foreground: 0 0% 7%;
-  --card: 0 0% 100%;
-  --card-foreground: 0 0% 7%;
+  --background: 45 20% 95%; /* wall #F6F5F1 */
+  --foreground: 30 10% 12%; /* ink #211E1B */
+  --card: 0 0% 100%; /* paper */
+  --card-foreground: 30 10% 12%;
   --popover: 0 0% 100%;
-  --popover-foreground: 0 0% 7%;
-  --primary: 120 10% 60%;
-  --primary-foreground: 0 0% 98%;
-  --secondary: 0 0% 96.1%;
-  --secondary-foreground: 0 0% 9%;
-  --muted: 0 0% 96.1%;
-  --muted-foreground: 0 0% 45.1%;
-  --accent: 0 0% 96.1%;
-  --accent-foreground: 0 0% 9%;
-  --destructive: 0 84.2% 60.2%;
-  --destructive-foreground: 0 0% 98%;
-  --border: 0 0% 89.8%;
-  --input: 0 0% 89.8%;
-  --ring: 120 10% 60%;
+  --popover-foreground: 30 10% 12%;
+  --primary: 30 10% 12%; /* charcoal signage */
+  --primary-foreground: 45 20% 96%;
+  --secondary: 43 16% 91%;
+  --secondary-foreground: 30 10% 12%;
+  --muted: 43 16% 92%;
+  --muted-foreground: 33 5% 47%; /* stone */
+  --accent: 43 16% 91%;
+  --accent-foreground: 30 10% 12%;
+  --destructive: 6 72% 43%;
+  --destructive-foreground: 45 20% 96%;
+  --border: 40 17% 85%; /* rail */
+  --input: 40 17% 82%;
+  --ring: 12 73% 45%; /* red dot for keyboard focus */
+  --red-dot: 12 73% 45%; /* #C8401F */
   --radius: 0.5rem;
 }
 
@@ -30,9 +34,9 @@
 }
 
 body {
-  background-color: #fafafa;
-  color: #121212;
-  font-family: var(--font-inter), sans-serif;
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: var(--font-body), system-ui, sans-serif;
 }
 
 h1,
@@ -41,7 +45,8 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: var(--font-playfair), serif;
+  font-family: var(--font-display), Georgia, serif;
+  letter-spacing: -0.01em;
 }
 
 p,
@@ -51,10 +56,59 @@ li {
   line-height: 1.5;
 }
 
-.transition-all {
-  transition: all 0.2s ease;
-}
-
 .card-shadow {
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* The signature: a gallery sold-sticker. Scarce by design. */
+.red-dot {
+  width: 0.875rem;
+  height: 0.875rem;
+  border-radius: 9999px;
+  background: hsl(var(--red-dot));
+  box-shadow:
+    0 0 0 2px hsl(0 0% 100%),
+    0 1px 3px rgba(0, 0, 0, 0.35);
+}
+
+/* Museum wall label: artist small and tracked, title beneath. */
+.museum-label {
+  font-size: 0.6875rem;
+  line-height: 1.45;
+  color: hsl(var(--muted-foreground));
+}
+.museum-label .museum-artist {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  color: hsl(var(--foreground) / 0.75);
+}
+
+/* Salon-hang frames for the hero wall */
+.salon-frame {
+  background: #fff;
+  padding: 6px;
+  border: 3px solid hsl(30 10% 16%);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.25),
+    0 10px 24px rgba(33, 30, 27, 0.18);
+}
+.salon-frame img {
+  display: block;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .salon-rise {
+    animation: salon-rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+  @keyframes salon-rise {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 }

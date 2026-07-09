@@ -65,7 +65,7 @@ export function ReviewStep({ wizard }: { wizard: WizardState }) {
                   <h4 className="text-sm font-medium text-muted-foreground">Art Preferences</h4>
                   <div className="flex flex-wrap gap-2">
                     {form.mainStyles.map((id) => (
-                      <Badge key={id} variant="secondary" className="bg-white text-[#121212] shadow-subtle">
+                      <Badge key={id} variant="secondary" className="bg-card text-foreground shadow-subtle">
                         {findStyle(id)?.name ?? id}
                       </Badge>
                     ))}

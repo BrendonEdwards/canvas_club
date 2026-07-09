@@ -104,7 +104,7 @@ export default function ArtSubscription() {
   const nextDisabled = WIZARD_STEPS[currentStep] === "Ratings" && !wizard.ratingComplete
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-[#FAFAFA] p-6">
+    <div className="flex justify-center items-center min-h-screen bg-background p-6">
       <Card className="w-full max-w-4xl shadow-subtle rounded-lg overflow-hidden">
         <CardHeader className="p-6">
           <div className="flex justify-between items-center">

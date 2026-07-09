@@ -39,7 +39,7 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center p-6 bg-[#FAFAFA]">
+    <main className="flex min-h-screen items-center justify-center p-6 bg-background">
       <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-6 bg-white p-8 rounded-lg shadow-subtle border">
         <div className="space-y-2 text-center">
           <h1 className="text-3xl font-serif">Welcome Back</h1>

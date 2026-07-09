@@ -116,7 +116,7 @@ export default function PartnerPage() {
   const styleForDraft = findStyle(draft.styleId)
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA]">
+    <div className="min-h-screen bg-background">
       <header className="bg-white border-b sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div>

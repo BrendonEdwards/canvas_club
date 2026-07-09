@@ -98,7 +98,7 @@ function DashboardContent() {
   if (!user || !userData) return null
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA]">
+    <div className="min-h-screen bg-background">
       <header className="bg-white border-b sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <h1 className="text-2xl font-serif font-bold text-primary">Canvas Club</h1>

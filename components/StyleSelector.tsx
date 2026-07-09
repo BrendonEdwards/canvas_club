@@ -12,8 +12,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { Check, Minus, Plus, Sparkles } from "lucide-react"
-import { ART_STYLES, displayCredit, findSubStyle, type ArtImage } from "@/lib/art-data"
+import { Minus, Plus, Sparkles } from "lucide-react"
+import { ART_STYLES, findSubStyle, type ArtImage } from "@/lib/art-data"
 
 interface StyleSelectorProps {
   selectedStyles: string[] // style ids
@@ -23,9 +23,14 @@ interface StyleSelectorProps {
 }
 
 function Attribution({ image, className = "" }: { image: ArtImage; className?: string }) {
+  if (image.source === "Unsplash") {
+    return <p className={`museum-label ${className}`}>{image.title}</p>
+  }
   return (
-    <p className={`text-[11px] leading-snug text-muted-foreground ${className}`}>
-      {displayCredit(image)}
+    <p className={`museum-label ${className}`}>
+      <span className="museum-artist">{image.artist}</span>
+      <br />
+      {image.title}
     </p>
   )
 }
@@ -49,7 +54,7 @@ export function StyleSelector({
           return (
             <div
               key={style.id}
-              className={`flex flex-col rounded-xl border-2 transition-all duration-200 overflow-hidden bg-white ${
+              className={`flex flex-col rounded-xl border-2 transition-all duration-200 overflow-hidden bg-card ${
                 isSelected ? "border-primary shadow-md" : "border-transparent shadow-sm hover:shadow-md"
               }`}
             >
@@ -68,21 +73,15 @@ export function StyleSelector({
                     sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-                  <div
-                    className={`absolute inset-0 bg-black/40 transition-opacity duration-200 flex items-center justify-center ${
-                      isSelected ? "opacity-100" : "opacity-0 group-hover:opacity-100"
-                    }`}
-                  >
-                    {isSelected ? (
-                      <div className="bg-primary text-primary-foreground rounded-full p-2 animate-in zoom-in">
-                        <Check className="h-6 w-6" />
-                      </div>
-                    ) : (
-                      <div className="bg-white/20 backdrop-blur-sm text-white rounded-full p-2">
+                  {isSelected ? (
+                    <span className="red-dot absolute top-3 right-3 animate-in zoom-in" aria-hidden />
+                  ) : (
+                    <div className="absolute inset-0 bg-black/30 transition-opacity duration-200 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                      <div className="bg-white/25 backdrop-blur-sm text-white rounded-full p-2">
                         <Plus className="h-6 w-6" />
                       </div>
-                    )}
-                  </div>
+                    </div>
+                  )}
                 </div>
               </button>
 
@@ -125,7 +124,7 @@ export function StyleSelector({
                 <DialogDescription>{activeStyle.description} Pick the sub-genres you love.</DialogDescription>
               </DialogHeader>
 
-              <div className="overflow-y-auto p-6 flex-1 bg-[#FAFAFA]">
+              <div className="overflow-y-auto p-6 flex-1 bg-background">
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
                   {activeStyle.subStyles.map((sub) => {
                     const isSubSelected = selectedSubStyles.includes(sub.id)
@@ -150,14 +149,12 @@ export function StyleSelector({
                             className="object-cover"
                           />
                           <div
-                            className={`absolute inset-0 transition-colors duration-200 flex items-center justify-center ${
-                              isSubSelected ? "bg-primary/20" : "bg-black/0 group-hover:bg-black/10"
+                            className={`absolute inset-0 transition-colors duration-200 ${
+                              isSubSelected ? "" : "bg-black/0 group-hover:bg-black/10"
                             }`}
                           >
                             {isSubSelected && (
-                              <div className="bg-primary text-primary-foreground rounded-full p-2 shadow-sm animate-in zoom-in">
-                                <Check className="h-5 w-5" />
-                              </div>
+                              <span className="red-dot absolute top-2.5 right-2.5 animate-in zoom-in" aria-hidden />
                             )}
                           </div>
                         </div>

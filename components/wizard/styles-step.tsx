@@ -36,7 +36,7 @@ export function StylesStep({ wizard }: { wizard: WizardState }) {
         <div className="flex flex-wrap gap-2 p-4 bg-primary/5 rounded-lg border border-primary/20">
           <span className="text-sm font-medium mr-2">Selected:</span>
           {form.mainStyles.map((id) => (
-            <Badge key={id} variant="secondary" className="bg-white text-[#121212] shadow-subtle">
+            <Badge key={id} variant="secondary" className="bg-card text-foreground shadow-subtle">
               {findStyle(id)?.name ?? id}
             </Badge>
           ))}

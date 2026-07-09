@@ -30,7 +30,7 @@ export function AccountStep({
         <Alert className="bg-primary/10 border-primary/20 shadow-subtle">
           <div className="flex flex-col items-center text-center py-6">
             <CheckCircle className="h-14 w-14 text-primary mb-4" />
-            <AlertDescription className="text-[#121212] text-xl font-medium font-serif">
+            <AlertDescription className="text-foreground text-xl font-medium font-serif">
               You&rsquo;re on the pilot list!
             </AlertDescription>
             <p className="text-muted-foreground mt-4 leading-relaxed max-w-md">
